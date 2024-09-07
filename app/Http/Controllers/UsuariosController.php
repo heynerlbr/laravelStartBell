@@ -651,39 +651,40 @@ class UsuariosController extends Controller
   //funciones moviles
   public function LoginMovil(Request $request)
   {
-      try {
-          $request->validate([            
-            "email"=>'required|email',
-            "password"=>'required'
-            ]);
-        $User=User::where("email","=",$request->email)->first();
-      if (isset($User->id)) {
-         if (Hash::check($request->password, $User->password)) {
-          //creacion de token
-          $token=$User->createToken("auth_token")->plainTextToken;
-          //responder si esta ok
-          return response()->json([
-              'status'=>'ok',
-              'msg'=>'usuario loggeado exitosamente',
-              "access_token"=> $token,
-  
-             ]);
-         }else {
-          return response()->json([
-              'status'=>'error',
-              'msg'=>'algo salio mal contacte con el administrador',
-              
-             ]);
-         }
-      }
-      } catch (\Throwable $th) {
+        try {
+            $request->validate([            
+                "email"=>'required|email',
+                "password"=>'required'
+                ]);
+            $User=User::where("email","=",$request->email)->first();
+            if (isset($User->id)) {
+                if (Hash::check($request->password, $User->password)) {
+                //creacion de token
+                $token=$User->createToken("auth_token")->plainTextToken;
+                //responder si esta ok
+                return response()->json([
+                    'status'=>'ok',
+                    'msg'=>'usuario loggeado exitosamente',
+                    "token"=> $token,
+                    "user"=> $User,
+        
+                    ]);
+                }else {
+                return response()->json([
+                    'status'=>'error',
+                    'msg'=>'algo salio mal contacte con el administrador',
+                    
+                    ]);
+                }
+            }
+        } catch (\Throwable $th) {
 
-          return response()->json([
-              'status'=>'error',
-              'msg'=>'algo salio mal contacte con el administrador x',
-              'error' => $th->getMessage(), 
-             ]);
-      }
+            return response()->json([
+                'status'=>'error',
+                'msg'=>'algo salio mal contacte con el administrador x',
+                'error' => $th->getMessage(), 
+                ]);
+        }
   }
   public function RegisterMovil(Request $request)
   {
