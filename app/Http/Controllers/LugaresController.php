@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\lugares;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 class LugaresController extends Controller
 {
     /**
@@ -20,12 +21,28 @@ class LugaresController extends Controller
         $empresas="";
         try{
             // $lugares =  lugares::get();
+            $role = Auth::user()->roles->first()->name;
+
+            // dd($role);
+            
+            $id_usuario_crea = Auth::user()->id;
+
+            if ($role=='admin') {
             $lugares=DB::table('lugares')
                     ->selectRaw('lugares.*,municipios.municipio,departamentos.departamento ,empresas_sistemas.nombre as nomEmpresa')
                     ->leftJoin('municipios', 'municipios.id_municipio', '=', 'lugares.IdMunicipio')
                     ->leftJoin('departamentos', 'departamentos.id_departamento', '=', 'municipios.departamento_id')
                     ->leftJoin('empresas_sistemas', 'empresas_sistemas.id', '=', 'lugares.idEmpresa')
                     ->get();
+            }else{
+                $lugares=DB::table('lugares')
+                ->selectRaw('lugares.*,municipios.municipio,departamentos.departamento ,empresas_sistemas.nombre as nomEmpresa')
+                ->leftJoin('municipios', 'municipios.id_municipio', '=', 'lugares.IdMunicipio')
+                ->leftJoin('departamentos', 'departamentos.id_departamento', '=', 'municipios.departamento_id')
+                ->leftJoin('empresas_sistemas', 'empresas_sistemas.id', '=', 'lugares.idEmpresa')
+                ->where('lugares.id_usuario_crea','=',$id_usuario_crea)
+                ->get();
+            }
 
             $municipios=DB::table('municipios')
                     ->selectRaw('municipios.*, departamentos.departamento')
@@ -38,6 +55,7 @@ class LugaresController extends Controller
             $mensaje = ["Titulo"=>"Exito","Respuesta"=>"la informaci&oacuten satisfatoria","Tipo"=>"success",
             "lugares"=>$lugares,"municipios"=>$municipios,"empresas"=>$empresas]; 
         }catch(\Exception $e){
+            // dd($e);
             $mensaje = ["Titulo"=>"Error","Respuesta"=>"Algo salio mal contacte con al administrador del sistema.","Tipo"=>"error","lugares"=>$lugares,"municipios"=>$municipios,"empresas"=>$empresas]; 
         }
         return json_encode($mensaje);       
@@ -56,11 +74,13 @@ class LugaresController extends Controller
     public function Crear(){
         $datos=json_decode($_POST['data']);
         try{         
+            $id_usuario_crea = Auth::user()->id;
             $role = lugares::create([
                 'nombre' => $datos->nombre,
                 'direccion'=>$datos->direccion,                
                 'idEmpresa'=>$datos->idEmpresa,                
                 'idMunicipio'=>$datos->idMunicipio,                
+                'id_usuario_crea'=>$id_usuario_crea,                
             ]);               
             $mensaje = ["Titulo"=>"Exito","Respuesta"=>"Se creó el registro de manera correcta","Tipo"=>"success"]; 
         }catch(\Exception $e){

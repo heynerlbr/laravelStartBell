@@ -9,6 +9,7 @@ use  App\Http\Controllers\EmpresasSistemasController;
 use  App\Http\Controllers\HomeController; 
 use  App\Http\Controllers\LugaresController; 
 use  App\Http\Controllers\ElementosLugaresController; 
+use  App\Http\Controllers\ReservasController; 
 use  App\Http\Controllers\AuthController; 
 //modelos para filemaker
 use App\Models\User;
@@ -110,6 +111,22 @@ Route::post('SubirImagenElemento', [ElementosLugaresController::class,'SubirImag
 Route::post('ListarImagenesElemento', [ElementosLugaresController::class,'ListarImagenesElemento'])->middleware('auth');
 Route::post('EliminarImagenElemento', [ElementosLugaresController::class,'EliminarImagenElemento'])->middleware('auth');
 Route::post('SeleccionarImagenPrincipal', [ElementosLugaresController::class,'SeleccionarImagenPrincipal'])->middleware('auth');
+//reservas elementos
+Route::post('ListarReservasElemento', [ElementosLugaresController::class,'ListarReservasElemento'])->middleware('auth');
+Route::post('CrearReservaElemento', [ElementosLugaresController::class,'CrearReservaElemento'])->middleware('auth');
+Route::post('ObtenerReservaElemento', [ElementosLugaresController::class,'ObtenerReservaElemento'])->middleware('auth');
+Route::post('ActualizarReservaElemento', [ElementosLugaresController::class,'ActualizarReservaElemento'])->middleware('auth');
+Route::post('EliminarReservaElemento', [ElementosLugaresController::class,'EliminarReservaElemento'])->middleware('auth');
+Route::post('CambiarEstadoReserva', [ElementosLugaresController::class,'CambiarEstadoReserva'])->middleware('auth');
+
+
+//reservas
+Route::get('reservas', [ReservasController::class,'index'])->middleware('auth');
+Route::post('ListarReservas', [ReservasController::class,'Listar'])->middleware('auth');
+Route::post('EliminarReserva', [ReservasController::class,'Eliminar'])->middleware('auth');
+Route::post('CrearReserva', [ReservasController::class,'Crear'])->middleware('auth');
+Route::post('MostrarReserva', [ReservasController::class,'Mostrar'])->middleware('auth');
+Route::post('ActualizarReserva', [ReservasController::class,'Actualizar'])->middleware('auth');
 
 //
 Route::post('/auth/google', [AuthController::class, 'googleAuth']);

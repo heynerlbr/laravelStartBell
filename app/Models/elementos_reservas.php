@@ -14,7 +14,8 @@ class elementos_reservas extends Model
         'hora_inicio',
         'hora_fin',
         'id_usuario_crea',
-        'estado'       
+        'estado',
+        'id_usuario_reserva'       
     ];
 
     public $timestamps = false;

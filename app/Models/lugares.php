@@ -14,6 +14,7 @@ class lugares extends Model
         'direccion',  
         'idEmpresa',  
         'idMunicipio',  
+        'id_usuario_crea'
     ];
 
     public $timestamps = false;

@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\elementos_lugares;
 use App\Models\elementos_imagenes;
+use App\Models\elementos_reservas;
 use App\Models\lugares;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -23,9 +24,32 @@ class ElementosLugaresController extends Controller
         $lugaresTabla="";
         $reservables=[];
         try{
-            $lugares=DB::table('lugares')->get();
-            $lugaresTabla=DB::table('lugares')->get();
-            $elementos_lugares =  elementos_lugares::get();
+
+            
+            $role = Auth::user()->roles->first()->name;
+            $id_usuario_crea = Auth::user()->id;
+
+            if ($role=='admin') {
+                $lugares=DB::table('lugares')->get();
+                $lugaresTabla=DB::table('lugares')->get();
+                $elementos_lugares =  elementos_lugares::get();
+            }else{
+                $lugares=DB::table('lugares')
+                        ->where('id_usuario_crea','=',$id_usuario_crea)
+                        ->get();
+                $lugaresTabla=DB::table('lugares')
+                                ->where('id_usuario_crea','=',$id_usuario_crea)
+                            ->get();
+                // $elementos_lugares =  elementos_lugares::get();
+                $elementos_lugares = DB::table('elementos_lugares')
+                                    ->select('elementos_lugares.*')
+                                    ->leftjoin('lugares','lugares.id','=','elementos_lugares.id_lugar')
+                                    ->where('lugares.id_usuario_crea','=',$id_usuario_crea)
+                                    ->get();
+            }
+
+
+
             $reservables=DB::table('reservables')->get();
             $mensaje = ["Titulo"=>"Exito","Respuesta"=>"la informaci&oacuten satisfatoria","Tipo"=>"success",
             "elementos_lugares"=>$elementos_lugares,"lugares"=>$lugares,"lugaresTabla"=>$lugaresTabla,"reservables"=>$reservables]; 
@@ -49,7 +73,8 @@ class ElementosLugaresController extends Controller
     public function Crear(){
         $datos=json_decode($_POST['data']);
         try{    
-            $fecha_crea=date('Y-m-d');    
+            $fecha_crea=date('Y-m-d');
+            $id_usuario_crea = Auth::user()->id;    
             $role = elementos_lugares::create([      
                 'id_lugar'=> $datos->id_lugar,
                 'nombre'=> $datos->nombre,
@@ -67,6 +92,7 @@ class ElementosLugaresController extends Controller
                 'id_reservable'=> $datos->id_reservable,
                 'fecha_crea'=>$fecha_crea,
                 'valor'=>$datos->valor,
+                'id_usuario_crea'=>$id_usuario_crea
             ]);              
             $mensaje = ["Titulo"=>"Exito","Respuesta"=>"Se creó el registro de manera correcta","Tipo"=>"success"]; 
         }catch(\Exception $e){
@@ -234,6 +260,193 @@ class ElementosLugaresController extends Controller
         }
         return json_encode($mensaje);
     }
+
+
+    public function ListarReservasElemento() {
+        $datos = json_decode($_POST['data']);
+        try {
+            $elementos_reservas = DB::table('elementos_reservas')
+            ->where('id_elemento', $datos->id_elemento)
+            ->get();
+
+            // dd($elementos_reservas );
+            $mensaje = [
+                "Titulo" => "Éxito",
+                "Respuesta" => "Elementos obtenidos correctamente.",
+                "Tipo" => "success",
+                'elementos_reservas' => $elementos_reservas
+            ];
+        } catch (\Throwable $th) {
+            $mensaje = [
+                "Titulo" => "Error",
+                "Respuesta" => "Algo salió mal, contacte al administrador del sistema.",
+                "Tipo" => "error"
+            ];
+        }
+        return json_encode($mensaje);
+    }
+    public function CrearReservaElemento(Request $request) {
+        $datos = json_decode($_POST['data']);
+        try {
+            $id_usuario=Auth::user()->id;
+            $elemento_reserva = new elementos_reservas();
+            $elemento_reserva->id_elemento = $datos->id_elemento;
+            $elemento_reserva->fecha = $datos->fecha;
+            $elemento_reserva->usuario = $id_usuario;
+            // Asigna otros campos necesarios
+            $elemento_reserva->save();
+    
+            $mensaje = [
+                "Titulo" => "Éxito",
+                "Respuesta" => "Reserva creada correctamente.",
+                "Tipo" => "success",
+                'elemento_reserva' => $elemento_reserva
+            ];
+        } catch (\Throwable $th) {
+            $mensaje = [
+                "Titulo" => "Error",
+                "Respuesta" => "No se pudo crear la reserva, contacte al administrador.",
+                "Tipo" => "error"
+            ];
+        }
+        return json_encode($mensaje);
+    }
+    public function ObtenerReservaElemento() {
+        try {
+            $datos = json_decode($_POST['data']);
+            $elemento_reserva = elementos_reservas::find($datos->id);
+            if ($elemento_reserva) {
+                $mensaje = [
+                    "Titulo" => "Éxito",
+                    "Respuesta" => "Reserva encontrada.",
+                    "Tipo" => "success",
+                    'elemento_reserva' => $elemento_reserva
+                ];
+            } else {
+                $mensaje = [
+                    "Titulo" => "Error",
+                    "Respuesta" => "Reserva no encontrada.",
+                    "Tipo" => "error"
+                ];
+            }
+        } catch (\Throwable $th) {
+            $mensaje = [
+                "Titulo" => "Error",
+                "Respuesta" => "Algo salió mal, contacte al administrador.",
+                "Tipo" => "error"
+            ];
+        }
+        return json_encode($mensaje);
+    }
+    public function ActualizarReservaElemento(Request $request) {
+        $datos = json_decode($_POST['data']);
+        try {
+            $elemento_reserva = elementos_reservas::find($datos->id);
+            if ($elemento_reserva) {
+                $id_usuario=Auth::user()->id;
+                $elemento_reserva->fecha = $datos->fecha ?? $elemento_reserva->fecha;
+                $elemento_reserva->id_usuario_crea = $id_usuario ?? $elemento_reserva->usuario;
+                // Actualiza otros campos necesarios
+                $elemento_reserva->save();
+    
+                $mensaje = [
+                    "Titulo" => "Éxito",
+                    "Respuesta" => "Reserva actualizada correctamente.",
+                    "Tipo" => "success",
+                    'elemento_reserva' => $elemento_reserva
+                ];
+            } else {
+                $mensaje = [
+                    "Titulo" => "Error",
+                    "Respuesta" => "Reserva no encontrada.",
+                    "Tipo" => "error"
+                ];
+            }
+        } catch (\Throwable $th) {
+            $mensaje = [
+                "Titulo" => "Error",
+                "Respuesta" => "No se pudo actualizar la reserva, contacte al administrador.",
+                "Tipo" => "error"
+            ];
+        }
+        return json_encode($mensaje);
+    }
+
+    public function EliminarReservaElemento() {
+        try {
+            $datos = json_decode($_POST['data']);
+            $elemento_reserva = elementos_reservas::find($datos->id);
+            if ($elemento_reserva) {
+                $elemento_reserva->delete();
+                $mensaje = [
+                    "Titulo" => "Éxito",
+                    "Respuesta" => "Reserva eliminada correctamente.",
+                    "Tipo" => "success"
+                ];
+            } else {
+                $mensaje = [
+                    "Titulo" => "Error",
+                    "Respuesta" => "Reserva no encontrada.",
+                    "Tipo" => "error"
+                ];
+            }
+        } catch (\Throwable $th) {
+            $mensaje = [
+                "Titulo" => "Error",
+                "Respuesta" => "No se pudo eliminar la reserva, contacte al administrador.",
+                "Tipo" => "error"
+            ];
+        }
+        return json_encode($mensaje);
+    }
+    
+
+    public function CambiarEstadoReserva(Request $request) {
+        $datos = json_decode($_POST['data']);
+        try {
+            $elemento_reserva = elementos_reservas::find($datos->id);
+    
+            if ($elemento_reserva) {
+                // Cambiar el estado si está dentro de los valores permitidos (0, 1, 2)
+                if (in_array(intval($datos->estado), [0, 1, 2])) {
+                    $elemento_reserva->estado = $datos->estado;
+                    $elemento_reserva->save();
+    
+                    $mensaje = [
+                        "Titulo" => "Éxito",
+                        "Respuesta" => "Estado actualizado correctamente.",
+                        "Tipo" => "success",
+                        'elemento_reserva' => $elemento_reserva
+                    ];
+                } else {
+                    $mensaje = [
+                        "Titulo" => "Error",
+                        "Respuesta" => "El estado proporcionado no es válido.",
+                        "Tipo" => "error"
+                    ];
+                }
+            } else {
+                $mensaje = [
+                    "Titulo" => "Error",
+                    "Respuesta" => "Reserva no encontrada.",
+                    "Tipo" => "error"
+                ];
+            }
+        } catch (\Throwable $th) {
+            $mensaje = [
+                "Titulo" => "Error",
+                "Respuesta" => "Algo salió mal, contacte al administrador.",
+                "Tipo" => "error"
+            ];
+        }
+        return json_encode($mensaje);
+    }
+    
+    
+    
+    
+    
+    
 
 
 }

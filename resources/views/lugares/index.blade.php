@@ -54,7 +54,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-6" hidden>
                                 <div class="form-group">
                                     <div class="mb-3">
                                         <label class="form-label" for="">Empresa</label>
@@ -65,17 +65,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <div class="mb-3">
-                                        <label class="form-label" for="">Municipio</label>
-                                        <select id="sel_municipio" class="accion form-control select2">
-                                            <option value="0">Seleccione...</option>
-                                            <option v-for="role in municipios" :value="role.id_municipio" v-text="role.municipio +'-'+role.departamento"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
+                         
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="mb-3">
@@ -89,6 +79,17 @@
                                     <div class="mb-3">
                                         <label class="form-label" for="">Dirección</label>
                                         <input type="text" v-model="registro.direccion" class="form-control accion" placeholder="Ingrese Dirección">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="">Municipio</label>
+                                        <select id="sel_municipio" class="accion form-control select2">
+                                            <option value="0">Seleccione...</option>
+                                            <option v-for="role in municipios" :value="role.id_municipio" v-text="role.municipio +'-'+role.departamento"></option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>

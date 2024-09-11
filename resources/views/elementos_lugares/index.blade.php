@@ -5,6 +5,36 @@
 @stop
 @section('content')
     <div id="app" style="padding: 1%;">
+        <div id="ModalReserva" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myModalLabel">Reserva</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-1">
+                            <label for="">Fecha</label>
+                            <input type="date" v-model='registroReserva.fecha' class="form-control">
+                        </div>
+                        <div class="mb-1">
+                            <label for="">Hora Inicio</label>
+                            <input type="time" v-model='registroReserva.hora_inicio' class="form-control">
+                        </div>
+                        <div class="mb-1">
+                            <label for="">Hora Fin</label> 
+                            <input type="time" v-model='registroReserva.hora_fin' class="form-control">
+                        </div>
+                    
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-success" @click='ActualizarReserva()'>Actualizar</button>
+                    </div>
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
         <div class="modal fade" id="iframeModal" tabindex="-1" role="dialog" aria-labelledby="iframeModalTitle" aria-hidden="true" style="width: 100% !important;">
             <div class="modal-dialog modal-fullscreen" role="document">
                 <div class="modal-content">
@@ -353,6 +383,74 @@
                         <!-- end tab pane -->
                         <div class="tab-pane fade" id="project-activities" role="tabpanel">
                             <div class="card">
+                                <div class="card-body">
+
+                                    <table id="table_elementos_reservas">
+                                        <thead>
+                                            <th>Código</th>
+                                            <th>Fecha</th>
+                                            <th>Hora Inicio</th>
+                                            <th>Hora Fin</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for='item in elementos_reservas'>
+                                                <td v-text='item.id'></td>
+                                                <td v-text='item.fecha'></td>
+                                                <td v-text='item.hora_inicio'></td>
+                                                <td v-text='item.hora_fin'></td>
+                                                <td>
+                                                    <span v-if="item.estado == 0" class="badge bg-primary">Creado</span>
+                                                    <span v-else-if="item.estado == 1" class="badge bg-success">Confirmado</span>
+                                                    <span v-else class="badge bg-danger">Anulado</span>
+                                                </td>
+                                                
+
+                                                <td>
+                                                    <div class="dropdown d-inline-block">
+                                                        <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <i class="ri-more-fill align-middle"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            <!-- Cambiar a Creado -->
+                                                            <li>
+                                                                <a href="#!" class="dropdown-item" @click='CambiarEstadoReserva(item.id,0)'>
+                                                                    <i class="ri-add-circle-line align-bottom me-2 text-muted"></i> Cambiar a Creado
+                                                                </a>
+                                                            </li>
+                                                            <!-- Cambiar a Confirmado -->
+                                                            <li>
+                                                                <a href="#!" class="dropdown-item" @click='CambiarEstadoReserva(item.id,1)'>
+                                                                    <i class="ri-checkbox-circle-line align-bottom me-2 text-muted"></i> Cambiar a Confirmado
+                                                                </a>
+                                                            </li>
+                                                            <!-- Cambiar a Anulado -->
+                                                            <li>
+                                                                <a href="#!" class="dropdown-item" @click='CambiarEstadoReserva(item.id,2)'>
+                                                                    <i class="ri-close-circle-line align-bottom me-2 text-muted"></i> Cambiar a Anulado
+                                                                </a>
+                                                            </li>
+                                                            <!-- Editar -->
+                                                            <li>
+                                                                <a href="#!" class="dropdown-item edit-item-btn" @click='MostrarReserva(item.id)' >
+                                                                    <i class="ri-pencil-line align-bottom me-2 text-muted"></i> Editar
+                                                                </a>
+                                                            </li>
+                                                            <!-- Eliminar -->
+                                                            <li>
+                                                                <a href="#!" class="dropdown-item remove-item-btn" @click='EliminarReserva(item.id)'>
+                                                                    <i class="ri-delete-bin-line align-bottom me-2 text-muted"></i> Eliminar
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                                
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                         <!-- end tab pane -->

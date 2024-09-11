@@ -23,7 +23,8 @@ class elementos_lugares extends Model
         'fecha_modifica',
         'url_imagen',
         'fecha_crea',
-        'valor'    
+        'valor',
+        'id_usuario_crea'    
     ];
     public $timestamps = false;
 }

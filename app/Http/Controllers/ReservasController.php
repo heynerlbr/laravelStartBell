@@ -3,19 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\elementos_reservas;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ReservasController extends Controller
 {
-    <?php
-
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-use App\Models\reservas;
-
-class ElementosLugaresController extends Controller
-{
-     /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -30,7 +24,23 @@ class ElementosLugaresController extends Controller
     public function Listar() {
         $reservas="";
         try{
-            $reservas =  reservas::get();
+
+            $role = Auth::user()->roles->first()->name;
+            $id_usuario_crea = Auth::user()->id;
+
+            if ($role=='admin') {
+                $reservas =  DB::table('elementos_reservas')                
+                            ->leftjoin('elementos_lugares','elementos_lugares.id','=','elementos_reservas.id_elemento')
+                            ->leftjoin('lugares','lugares.id','=','elementos_lugares.id_lugar')
+                            ->get();
+            }else{
+                $reservas =  DB::table('elementos_reservas')                
+                            ->leftjoin('elementos_lugares','elementos_lugares.id','=','elementos_reservas.id_elemento')
+                            ->leftjoin('lugares','lugares.id','=','elementos_lugares.id_lugar')
+                            ->where('lugares.id_usuario_crea','=', $id_usuario_crea)
+                            ->get();
+            }
+            
             $mensaje = ["Titulo"=>"Exito","Respuesta"=>"la informaci&oacuten satisfatoria","Tipo"=>"success","reservas"=>$reservas]; 
         }catch(\Exception $e){
             $mensaje = ["Titulo"=>"Error","Respuesta"=>"Algo salio mal contacte con al administrador del sistema.","Tipo"=>"error","reservas"=>$reservas]; 
@@ -42,61 +52,58 @@ class ElementosLugaresController extends Controller
     public function Eliminar(){
         $datos=json_decode($_POST['data']);
         try{
-            $flight = reservas::find($datos->id);
+            $flight = elementos_reservas::find($datos->id);
             $flight->delete();
             
-               $mensaje = ["Titulo"=>"Exito","Respuesta"=>"Se eliminó el registro de manera correcta","Tipo"=>"success"]; 
-           }catch(\Exception $e){
-               $mensaje = ["Titulo"=>"Error","Respuesta"=>"Algo salio mal contacte con al administrador del sistema.","Tipo"=>"error"]; 
-           }
-           return json_encode($mensaje);
+            $mensaje = ["Titulo"=>"Exito","Respuesta"=>"Se eliminó el registro de manera correcta","Tipo"=>"success"]; 
+        }catch(\Exception $e){
+            $mensaje = ["Titulo"=>"Error","Respuesta"=>"Algo salio mal contacte con al administrador del sistema.","Tipo"=>"error"]; 
+        }
+        return json_encode($mensaje);
     }
 
 
     public function Crear(){
         $datos=json_decode($_POST['data']);
         try{         
-            $role = reservas::create([
+            $role = elementos_reservas::create([
                 'name' => $datos->name,
                 'description'=>$datos->descripcion                
-            ]);               
-                       
-
-             $mensaje = ["Titulo"=>"Exito","Respuesta"=>"Se creó el registro de manera correcta","Tipo"=>"success"]; 
-           }catch(\Exception $e){
-               $mensaje = ["Titulo"=>"Error","Respuesta"=>"No se creó el registro de manera correcta","Tipo"=>"error"]; 
-           }
+            ]);                      
+            $mensaje = ["Titulo"=>"Exito","Respuesta"=>"Se creó el registro de manera correcta","Tipo"=>"success"]; 
+        }catch(\Exception $e){
+            $mensaje = ["Titulo"=>"Error","Respuesta"=>"No se creó el registro de manera correcta","Tipo"=>"error"]; 
+        }
         return json_encode($mensaje);
     }
 
     
     public function Mostrar(){
         $datos=json_decode($_POST['data']);
-        $role="";
+        $reserva="";
         try{
-               $role=reservas::find($datos->id);                      
-               $mensaje = ["Titulo"=>"Exito","Respuesta"=>"Se creó el registro de manera correcta","Tipo"=>"success","role"=>$role]; 
-           }catch(\Exception $e){
-               $mensaje = ["Titulo"=>"Error","Respuesta"=>"No se creó el registro de manera correcta","Tipo"=>"error","role"=>$role]; 
-           }
+            $reserva=elementos_reservas::find($datos->id);                      
+            $mensaje = ["Titulo"=>"Exito","Respuesta"=>"Se creó el registro de manera correcta","Tipo"=>"success","reserva"=>$reserva]; 
+        }catch(\Exception $e){
+        $mensaje = ["Titulo"=>"Error","Respuesta"=>"No se creó el registro de manera correcta","Tipo"=>"error","reserva"=>$reserva]; 
+        }
         return json_encode($mensaje);
     }
 
     public function Actualizar(){
         $datos=json_decode($_POST['data']);
         try{
-                $role=reservas::find($datos->id);  
-                $role->name=$datos->name; 
-                $role->description=$datos->descripcion;                            
-                $role->save();             
-               $mensaje = ["Titulo"=>"Exito","Respuesta"=>"Se actualizó el registro de manera correcta","Tipo"=>"success"]; 
-           }catch(\Exception $e){
-               $mensaje = ["Titulo"=>"Error","Respuesta"=>"No se actualizó el registro de manera correcta","Tipo"=>"error"]; 
-           }
+                $reserva=elementos_reservas::find($datos->id); 
+                $reserva->fecha=$datos->fecha;
+                $reserva->hora_inicio=$datos->hora_inicio;
+                $reserva->hora_fin=$datos->hora_fin;
+                $reserva->save();             
+                $mensaje = ["Titulo"=>"Exito","Respuesta"=>"Se actualizó el registro de manera correcta","Tipo"=>"success"]; 
+        }catch(\Exception $e){
+            $mensaje = ["Titulo"=>"Error","Respuesta"=>"No se actualizó el registro de manera correcta","Tipo"=>"error"]; 
+        }
         return json_encode($mensaje);
         //para imprimir de en la consola en network
         //dd($datos); 
     }
-}
-
 }
