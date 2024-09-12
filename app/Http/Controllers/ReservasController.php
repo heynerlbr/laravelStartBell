@@ -29,12 +29,14 @@ class ReservasController extends Controller
             $id_usuario_crea = Auth::user()->id;
 
             if ($role=='admin') {
-                $reservas =  DB::table('elementos_reservas')                
+                $reservas =  DB::table('elementos_reservas') 
+                            ->selectRaw('elementos_reservas.*,lugares.nombre as nombreLugar,elementos_lugares.nombre as nombreElemento')               
                             ->leftjoin('elementos_lugares','elementos_lugares.id','=','elementos_reservas.id_elemento')
                             ->leftjoin('lugares','lugares.id','=','elementos_lugares.id_lugar')
                             ->get();
             }else{
-                $reservas =  DB::table('elementos_reservas')                
+                $reservas =  DB::table('elementos_reservas')       
+                            ->selectRaw('elementos_reservas.*,lugares.nombre as nombreLugar,elementos_lugares.nombre as nombreElemento')           
                             ->leftjoin('elementos_lugares','elementos_lugares.id','=','elementos_reservas.id_elemento')
                             ->leftjoin('lugares','lugares.id','=','elementos_lugares.id_lugar')
                             ->where('lugares.id_usuario_crea','=', $id_usuario_crea)
@@ -43,6 +45,7 @@ class ReservasController extends Controller
             
             $mensaje = ["Titulo"=>"Exito","Respuesta"=>"la informaci&oacuten satisfatoria","Tipo"=>"success","reservas"=>$reservas]; 
         }catch(\Exception $e){
+            dd($e);
             $mensaje = ["Titulo"=>"Error","Respuesta"=>"Algo salio mal contacte con al administrador del sistema.","Tipo"=>"error","reservas"=>$reservas]; 
         }
         return json_encode($mensaje);       
@@ -82,7 +85,13 @@ class ReservasController extends Controller
         $datos=json_decode($_POST['data']);
         $reserva="";
         try{
-            $reserva=elementos_reservas::find($datos->id);                      
+            // $reserva=elementos_reservas::find($datos->id);   
+            $reserva = DB::table('elementos_reservas')       
+                    ->selectRaw('elementos_reservas.*, lugares.nombre as nombreLugar, elementos_lugares.nombre as nombreElemento')           
+                    ->leftJoin('elementos_lugares', 'elementos_lugares.id', '=', 'elementos_reservas.id_elemento')
+                    ->leftJoin('lugares', 'lugares.id', '=', 'elementos_lugares.id_lugar')
+                    ->where('elementos_reservas.id', '=', $datos->id)
+                    ->first();                   
             $mensaje = ["Titulo"=>"Exito","Respuesta"=>"Se creó el registro de manera correcta","Tipo"=>"success","reserva"=>$reserva]; 
         }catch(\Exception $e){
         $mensaje = ["Titulo"=>"Error","Respuesta"=>"No se creó el registro de manera correcta","Tipo"=>"error","reserva"=>$reserva]; 
