@@ -27,6 +27,7 @@ class ReservasController extends Controller
 
             $role = Auth::user()->roles->first()->name;
             $id_usuario_crea = Auth::user()->id;
+            $id_empresa = Auth::user()->idEmpresa;
 
             if ($role=='admin') {
                 $reservas =  DB::table('elementos_reservas') 
@@ -40,12 +41,13 @@ class ReservasController extends Controller
                             ->leftjoin('elementos_lugares','elementos_lugares.id','=','elementos_reservas.id_elemento')
                             ->leftjoin('lugares','lugares.id','=','elementos_lugares.id_lugar')
                             ->where('lugares.id_usuario_crea','=', $id_usuario_crea)
+                            ->where('lugares.id_empresa','=', $id_empresa)
                             ->get();
             }
             
             $mensaje = ["Titulo"=>"Exito","Respuesta"=>"la informaci&oacuten satisfatoria","Tipo"=>"success","reservas"=>$reservas]; 
         }catch(\Exception $e){
-            dd($e);
+            // dd($e);
             $mensaje = ["Titulo"=>"Error","Respuesta"=>"Algo salio mal contacte con al administrador del sistema.","Tipo"=>"error","reservas"=>$reservas]; 
         }
         return json_encode($mensaje);       

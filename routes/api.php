@@ -9,6 +9,7 @@ use  App\Http\Controllers\ApiController;
 use App\Http\Controllers\ProgramacionesasesoresController;
 use App\Http\Controllers\MyReservasController;
 use App\Http\Controllers\ElementosReservablesController;
+use App\Http\Controllers\FavoritosController;
 use App\Http\Controllers\AuthController;
 
 /*
@@ -27,6 +28,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
+
+Route::post('/obtenerFavoritos',  [FavoritosController::class,'obtenerFavoritos']);
+Route::post('/agregarAFavoritos',  [FavoritosController::class,'agregarAFavoritos']);
 
 Route::post('CancelarReservaApi', [MyReservasController::class,'CancelarReservaApi']);
 Route::post('obtenerMisReservasApi', [MyReservasController::class,'Listar']);

@@ -238,9 +238,9 @@ class UsuariosController extends Controller
                  $usuario->apellidos=$datos->apellidos; 
                  $usuario->email=$datos->email; 
                  $usuario->identificacion=$datos->identificacion;            
-                 $usuario->id_zona=$datos->idZona;        
-                 $usuario->id_cargo=$datos->cargo;        
-                 $usuario->id_sucursal=$datos->idSucursal;
+                //  $usuario->id_zona=$datos->idZona ?? null;        
+                //  $usuario->id_cargo=$datos->cargo ?? null;        
+                //  $usuario->id_sucursal=$datos->idSucursal ?? null;
                  $usuario->estado=$datos->estado;      
                  $usuario->categorias=json_encode($datos->categorias);
                  $usuario->idEmpresa=$datos->idEmpresa;     
@@ -263,18 +263,19 @@ class UsuariosController extends Controller
                      // $usuario->imgFirma=$imgFirma;     
                  }
                  $usuario->save();
-                 $arrayIdsSucursales=json_decode($datos->idSucursal);
-                 $fecha=date('Y-m-d');                
-                 if (count($arrayIdsSucursales)> 0) {
-                    for ($i=0; $i < count($arrayIdsSucursales) ; $i++) {                    
-                     $id_usuario=$datos->id;
-                     $idSucursal=$arrayIdsSucursales[$i];
-                     users_sucursales::updateOrCreate(
-                         ['id_usuario' => $id_usuario, 'id_sucursal' => $idSucursal],
-                         ['fecha_modifica'=>$fecha,'id_usuario_modifica'=>$IdUsuarioCrea]                      
-                     );
-                    }
-                 }
+                //  $arrayIdsSucursales=json_decode($datos->idSucursal);
+                 $fecha=date('Y-m-d');    
+
+                //  if (count($arrayIdsSucursales)> 0) {
+                //     for ($i=0; $i < count($arrayIdsSucursales) ; $i++) {                    
+                //      $id_usuario=$datos->id;
+                //      $idSucursal=$arrayIdsSucursales[$i];
+                //      users_sucursales::updateOrCreate(
+                //          ['id_usuario' => $id_usuario, 'id_sucursal' => $idSucursal],
+                //          ['fecha_modifica'=>$fecha,'id_usuario_modifica'=>$IdUsuarioCrea]                      
+                //      );
+                //     }
+                //  }
                  // users_sucursales
                  //para actualizar el rol se debe quitar primero y luego crear
                  // $usuario->roles()->detach($datos->role);
@@ -304,7 +305,7 @@ class UsuariosController extends Controller
                                         "pass"=>$datos->identificacion
                                         ]; 
             }catch(\Exception $e){
-             // dd($e);
+              dd($e);
                 $mensaje = ["Titulo"=>"Error","Respuesta"=>"No se actualizó el registro de manera correcta","Tipo"=>"error"]; 
             }
          return json_encode($mensaje);

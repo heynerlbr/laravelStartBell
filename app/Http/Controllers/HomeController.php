@@ -28,85 +28,85 @@ class HomeController extends Controller
 
 
 
-        if (Agent::isDesktop()) {
-            if ($Tipouser=='admin' || $Tipouser=='superadministrador' || $Tipouser=='administrador' || $Tipouser=='observador' ) {  
-                return view('dashboard.index');
-            }elseif ($Tipouser=='Conductor') {           
+        // if (Agent::isDesktop()) {
+        //     if ($Tipouser=='admin' || $Tipouser=='superadministrador' || $Tipouser=='administrador' || $Tipouser=='observador' ) {  
+        //         return view('dashboard.index');
+        //     }elseif ($Tipouser=='Conductor') {           
                 
-                return view('inicio.conductor');
-            }else{
-                return view('inicio.conductor');
-            }
-        } elseif (Agent::isMobile()) {
-            if ($Tipouser=='admin' || $Tipouser=='superadministrador' || $Tipouser=='administrador' || $Tipouser=='observador') {  
-                return view('inicio.conductor');
-            }elseif ($Tipouser=='Conductor') {           
+        //         return view('inicio.conductor');
+        //     }else{
+        //         return view('inicio.conductor');
+        //     }
+        // } elseif (Agent::isMobile()) {
+        //     if ($Tipouser=='admin' || $Tipouser=='superadministrador' || $Tipouser=='administrador' || $Tipouser=='observador') {  
+        //         return view('inicio.conductor');
+        //     }elseif ($Tipouser=='Conductor') {           
                 
-                return view('inicio.conductor');
-            }else{
-                return view('inicio.conductor');
-            }
-        } elseif (Agent::isTablet()) {
-            if ($Tipouser=='admin' || $Tipouser=='superadministrador' || $Tipouser=='administrador' || $Tipouser=='observador') {  
-                return view('inicio.conductor');
-            }elseif ($Tipouser=='Conductor') {           
+        //         return view('inicio.conductor');
+        //     }else{
+        //         return view('inicio.conductor');
+        //     }
+        // } elseif (Agent::isTablet()) {
+        //     if ($Tipouser=='admin' || $Tipouser=='superadministrador' || $Tipouser=='administrador' || $Tipouser=='observador') {  
+        //         return view('inicio.conductor');
+        //     }elseif ($Tipouser=='Conductor') {           
                 
-                return view('inicio.conductor');
-            }else{
-                return view('inicio.conductor');
-            }
-        }
+        //         return view('inicio.conductor');
+        //     }else{
+        //         return view('inicio.conductor');
+        //     }
+        // }
 
 
-        // dd( $Tipouser);
-        if ($Tipouser=='admin') {  
+        // // dd( $Tipouser);
+        // if ($Tipouser=='admin') {  
             return view('dashboard.index');
-        }elseif ($Tipouser=='Conductor') {           
+        // }elseif ($Tipouser=='Conductor') {           
             
-            return view('inicio.conductor');
-        }
+        //     return view('inicio.conductor');
+        // }
         
-        elseif ($Tipouser=='proveedor' || $Tipouser=='proveedorObservador' ) { 
-            $RespuestaVencimiento='';
-            $fecha_actual = strtotime(date("Y-m-d"));
-            $fecha_now = date("Y-m-d");
-            $user=User::find(Auth::user()->id);
-            $fecha=$user->fechaVencimientoMembresia;
-            $correoHas=$user->email;
-            if ($fecha!=null && $fecha!="" && $fecha!="undefined") {
-                $today = date('Y-m-d');
-                $date1=date_create($today);              
-                $date2=date_create($fecha);
-                $diff=date_diff($date1,$date2);
-                $timeDiff = $diff->format("%R%a");
-                $timeDiff2 = $diff->format("%a");
+        // elseif ($Tipouser=='proveedor' || $Tipouser=='proveedorObservador' ) { 
+        //     $RespuestaVencimiento='';
+        //     $fecha_actual = strtotime(date("Y-m-d"));
+        //     $fecha_now = date("Y-m-d");
+        //     $user=User::find(Auth::user()->id);
+        //     $fecha=$user->fechaVencimientoMembresia;
+        //     $correoHas=$user->email;
+        //     if ($fecha!=null && $fecha!="" && $fecha!="undefined") {
+        //         $today = date('Y-m-d');
+        //         $date1=date_create($today);              
+        //         $date2=date_create($fecha);
+        //         $diff=date_diff($date1,$date2);
+        //         $timeDiff = $diff->format("%R%a");
+        //         $timeDiff2 = $diff->format("%a");
                 
-                if($timeDiff < 0){
+        //         if($timeDiff < 0){
                    
-                    $RespuestaVencimiento='VENCIDA';
-                }else{                  
-                    $RespuestaVencimiento='ACTIVA';
-                }
-                $days=$timeDiff2;
-              if ($RespuestaVencimiento=='VENCIDA') {
-                     $idUser=Auth::user()->id;
-                     DB::table('role_user')
-                     ->where('user_id', $idUser)
-                     ->update(['role_id' => 8]);
-                }else {
-                    $idUser=Auth::user()->id;
-                     DB::table('role_user')
-                     ->where('user_id', $idUser)
-                     ->update(['role_id' => 3]);
-                }    
-              $data=compact('RespuestaVencimiento','days','Tipouser','correoHas','days','fecha','today');         
-            }else {
-                $data=compact('RespuestaVencimiento');
-            }
-            return view('dashboard.index', $data);   
-        } else {
-            return redirect('/dashboard');    
-        }     
+        //             $RespuestaVencimiento='VENCIDA';
+        //         }else{                  
+        //             $RespuestaVencimiento='ACTIVA';
+        //         }
+        //         $days=$timeDiff2;
+        //       if ($RespuestaVencimiento=='VENCIDA') {
+        //              $idUser=Auth::user()->id;
+        //              DB::table('role_user')
+        //              ->where('user_id', $idUser)
+        //              ->update(['role_id' => 8]);
+        //         }else {
+        //             $idUser=Auth::user()->id;
+        //              DB::table('role_user')
+        //              ->where('user_id', $idUser)
+        //              ->update(['role_id' => 3]);
+        //         }    
+        //       $data=compact('RespuestaVencimiento','days','Tipouser','correoHas','days','fecha','today');         
+        //     }else {
+        //         $data=compact('RespuestaVencimiento');
+        //     }
+        //     return view('dashboard.index', $data);   
+        // } else {
+        //     return redirect('/dashboard');    
+        // }     
     }
     public function perfil() {
         $Tipouser = Auth::user()->roles->first()->name;       

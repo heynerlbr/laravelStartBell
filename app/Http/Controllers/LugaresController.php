@@ -26,6 +26,8 @@ class LugaresController extends Controller
             // dd($role);
             
             $id_usuario_crea = Auth::user()->id;
+            $id_empresa = Auth::user()->idEmpresa;
+            // dd($id_empresa);
 
             if ($role=='admin') {
             $lugares=DB::table('lugares')
@@ -41,6 +43,7 @@ class LugaresController extends Controller
                 ->leftJoin('departamentos', 'departamentos.id_departamento', '=', 'municipios.departamento_id')
                 ->leftJoin('empresas_sistemas', 'empresas_sistemas.id', '=', 'lugares.idEmpresa')
                 ->where('lugares.id_usuario_crea','=',$id_usuario_crea)
+                ->orWhere('lugares.id_empresa','=',$id_empresa)
                 ->get();
             }
 
@@ -48,8 +51,21 @@ class LugaresController extends Controller
                     ->selectRaw('municipios.*, departamentos.departamento')
                     ->leftJoin('departamentos', 'departamentos.id_departamento', '=', 'municipios.departamento_id')
                     ->get();
-            $empresas=DB::table('empresas_sistemas')
-                    ->get();
+
+            
+            $queryEmpresa=DB::table('empresas_sistemas');
+
+            switch ($role) {
+                case 'admin':
+                    break;
+                    
+                    default:
+                    # code...
+                    $queryEmpresa->where('id_empresa','=', $id_empresa);
+                    break;
+            }
+
+            $empresas=$queryEmpresa->get();
                     
 
             $mensaje = ["Titulo"=>"Exito","Respuesta"=>"la informaci&oacuten satisfatoria","Tipo"=>"success",
@@ -75,12 +91,14 @@ class LugaresController extends Controller
         $datos=json_decode($_POST['data']);
         try{         
             $id_usuario_crea = Auth::user()->id;
+            $id_empresa = Auth::user()->idEmpresa;
             $role = lugares::create([
                 'nombre' => $datos->nombre,
                 'direccion'=>$datos->direccion,                
                 'idEmpresa'=>$datos->idEmpresa,                
                 'idMunicipio'=>$datos->idMunicipio,                
                 'id_usuario_crea'=>$id_usuario_crea,                
+                'id_empresa'=>$id_empresa,                
             ]);               
             $mensaje = ["Titulo"=>"Exito","Respuesta"=>"Se creó el registro de manera correcta","Tipo"=>"success"]; 
         }catch(\Exception $e){

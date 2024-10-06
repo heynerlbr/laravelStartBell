@@ -132,23 +132,42 @@ class ApiController extends Controller
     
 
 
-    public function obtenerElementosFiltrados(Request $request) {
+    public function obtenerElementosFiltrados(Request $request)
+    {
         try {
+            // Validar los parámetros de entrada
+            // $validated = $request->validate([
+            //     'idMunicipio' => 'nullable|integer|exists:lugares,idMunicipio',
+            //     'idTipoReserva' => 'nullable|integer|exists:reservas,id',
+            //     'idLugar' => 'nullable|integer|exists:lugares,id',
+            // ]);
+    
             // Obtener los parámetros de la solicitud
+            // Obtener los parámetros directamente del request
             $idMunicipio = $request->input('idMunicipio');
             $idTipoReserva = $request->input('idTipoReserva');
             $idLugar = $request->input('idLugar');
     
             // Realizar la búsqueda de elementos filtrados
-            $elementosFiltrados = DB::table('elementos_lugares')
+            $query = DB::table('elementos_lugares')
                 ->distinct()
                 ->leftJoin('lugares', 'elementos_lugares.id_lugar', '=', 'lugares.id')
-
-                ->select('elementos_lugares.*')
-                ->where('lugares.idMunicipio', $idMunicipio)
-                ->where('elementos_lugares.id_reservable', $idTipoReserva)
-                ->where('elementos_lugares.id_lugar', $idLugar)
-                ->get();
+                ->select('elementos_lugares.*');
+    
+            // Añadir condiciones solo si los parámetros están presentes
+            if ($idLugar !== null) {
+                $query->where('elementos_lugares.id_lugar','=', $idLugar);
+            }
+    
+            // if ($idMunicipio !== null) {
+            //     $query->where('lugares.idMunicipio','=', $idMunicipio);
+            // }
+    
+            // if ($idTipoReserva !== null) {
+            //     $query->where('elementos_lugares.id_reservable', $idTipoReserva);
+            // }
+    
+            $elementosFiltrados = $query->get();
     
             // Devolver los elementos filtrados como respuesta
             return response()->json(['elementosFiltrados' => $elementosFiltrados]);

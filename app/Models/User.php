@@ -39,7 +39,8 @@ class User extends Authenticatable  implements MustVerifyEmail
         'valorMembresia',
         'idEmpresa',
         'imgUser',
-        'imgFirma'
+        'imgFirma',
+        
     ];
 
     /**

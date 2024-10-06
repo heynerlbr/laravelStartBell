@@ -14,8 +14,15 @@ class lugares extends Model
         'direccion',  
         'idEmpresa',  
         'idMunicipio',  
-        'id_usuario_crea'
+        'id_usuario_crea',
+        'id_empresa',
     ];
 
     public $timestamps = false;
+
+    // Relación con el modelo Favorito
+    public function favoritos()
+    {
+        return $this->hasMany(favoritos::class, 'lugar_id');
+    }
 }

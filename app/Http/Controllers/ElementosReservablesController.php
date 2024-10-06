@@ -184,6 +184,16 @@ class ElementosReservablesController extends Controller
 
                 $horaApertura = substr($elementoLugar->hora_inicio_disponibilidad, 0, 5);
                 $horaCierre = substr($elementoLugar->hora_fin_disponibilidad, 0, 5);
+                // Convertir horas a objetos Carbon para comparación
+                $horaAperturaCarbon = Carbon::createFromFormat('H:i', $horaApertura);
+                $horaCierreCarbon = Carbon::createFromFormat('H:i', $horaCierre);
+                $horaLimite = Carbon::createFromFormat('H:i', '06:00');
+
+                // Verificar si la hora de apertura es mayor a la hora de cierre
+                if ($horaAperturaCarbon->greaterThan($horaCierreCarbon)) {
+                    // Ajustar la hora de apertura a las 06:00 AM
+                    $horaApertura = $horaLimite->format('H:i');
+                }
 
                 // Calcular los horarios disponibles restando los horarios reservados
                 $horariosDisponibles = $this->calcularHorariosDisponibles($horaApertura, $horaCierre, $horariosReservados);
