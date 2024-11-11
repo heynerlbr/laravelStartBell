@@ -10,7 +10,8 @@ class elementos_reservas extends Model
     use HasFactory;
     protected $fillable = [
         'id_elemento',
-        'fecha',
+        'fecha_inicio',
+        'fecha_fin',
         'hora_inicio',
         'hora_fin',
         'id_usuario_crea',

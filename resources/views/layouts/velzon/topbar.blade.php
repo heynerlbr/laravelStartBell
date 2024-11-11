@@ -12,7 +12,6 @@
                             <img src="{{ URL::asset('build/images/logo-dark.png') }}" alt="" height="17">
                         </span>
                     </a>
-
                     <a href="index" class="logo logo-light">
                         <span class="logo-sm">
                             <img src="{{ URL::asset('build/images/logo-sm.png') }}" alt="" height="22">
@@ -22,7 +21,6 @@
                         </span>
                     </a>
                 </div>
-
                 @if (!Auth::user()->hasRole('conductor'))
                     <button type="button"
                         class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger shadow-none"
@@ -34,28 +32,21 @@
                         </span>
                     </button>
                 @endif
-
-
                 {{-- @php
                     $empresaImg = Auth::user()->empresa->img;
                 @endphp
                 <img src="{{ URL::asset('build/images/logo-italcol.png') }}" alt=""
                     style="height: 40px; margin-top: 13px;"> --}}
-
                     @php
                         $user = Auth::user();
                         $empresaImg = $user->empresa ? $user->empresa->img : null;
                     @endphp
-
-                    @if($empresaImg)
+                    {{-- @if($empresaImg)
                         <img src="{{ URL::asset($empresaImg) }}" alt="Logo de la empresa" style="height: 40px; margin-top: 13px;">
                     @else
                         <img src="{{ URL::asset('build/images/logo-italcol.png') }}" alt="Logo predeterminado" style="height: 40px; margin-top: 13px;">
-                    @endif
-
+                    @endif --}}
                 {{-- <h5 class="mt-2 mx-2 text-muted" id="title_info_general">Información general</h5> --}}
-
-
                 <!-- App Search-->
                 {{-- <form class="app-search d-none d-md-block">
                     <div class="position-relative">
@@ -69,7 +60,6 @@
                             <div class="dropdown-header">
                                 <h6 class="text-overflow text-muted mb-0 text-uppercase">Recent Searches</h6>
                             </div>
-
                             <div class="dropdown-item bg-transparent text-wrap">
                                 <a href="index" class="btn btn-soft-secondary btn-sm rounded-pill">how to setup <i class="mdi mdi-magnify ms-1"></i></a>
                                 <a href="index" class="btn btn-soft-secondary btn-sm rounded-pill">buttons <i class="mdi mdi-magnify ms-1"></i></a>
@@ -78,30 +68,25 @@
                             <div class="dropdown-header mt-2">
                                 <h6 class="text-overflow text-muted mb-1 text-uppercase">Pages</h6>
                             </div>
-
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item notify-item">
                                 <i class="ri-bubble-chart-line align-middle fs-18 text-muted me-2"></i>
                                 <span>Analytics Dashboard</span>
                             </a>
-
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item notify-item">
                                 <i class="ri-lifebuoy-line align-middle fs-18 text-muted me-2"></i>
                                 <span>Help Center</span>
                             </a>
-
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item notify-item">
                                 <i class="ri-user-settings-line align-middle fs-18 text-muted me-2"></i>
                                 <span>My account settings</span>
                             </a>
-
                             <!-- item-->
                             <div class="dropdown-header mt-2">
                                 <h6 class="text-overflow text-muted mb-2 text-uppercase">Members</h6>
                             </div>
-
                             <div class="notification-list">
                                 <!-- item -->
                                 <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
@@ -135,17 +120,13 @@
                                 </a>
                             </div>
                         </div>
-
                         <div class="text-center pt-3 pb-1">
                             <a href="pages-search-results" class="btn btn-primary btn-sm">View All Results <i class="ri-arrow-right-line ms-1"></i></a>
                         </div>
                     </div>
                 </form> --}}
             </div>
-
-                
             <div class="d-flex align-items-center">
-
                 {{-- <div class="dropdown d-md-none topbar-head-dropdown header-item">
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" id="page-header-search-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="bx bx-search fs-22"></i>
@@ -161,7 +142,6 @@
                         </form>
                     </div>
                 </div> --}}
-
                 {{-- <div class="dropdown ms-1 topbar-head-dropdown header-item">
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         @switch(Session::get('lang'))
@@ -191,48 +171,40 @@
                         @endswitch
                     </button>
                     <div class="dropdown-menu dropdown-menu-end">
-
                         <!-- item-->
                         <a href="{{ url('index/en') }}" class="dropdown-item notify-item language py-2" data-lang="en" title="English">
                             <img src="{{ URL::asset('build/images/flags/us.svg') }}" alt="user-image" class="me-2 rounded" height="18">
                             <span class="align-middle">English</span>
                         </a>
-
                         <!-- item-->
                         <a href="{{ url('index/sp') }}" class="dropdown-item notify-item language" data-lang="sp" title="Spanish">
                             <img src="{{ URL::asset('build/images/flags/spain.svg') }}" alt="user-image" class="me-2 rounded" height="18">
                             <span class="align-middle">Española</span>
                         </a>
-
                         <!-- item-->
                         <a href="{{ url('index/gr') }}" class="dropdown-item notify-item language" data-lang="gr" title="German">
                             <img src="{{ URL::asset('build/images/flags/germany.svg') }}" alt="user-image" class="me-2 rounded" height="18"> <span class="align-middle">Deutsche</span>
                         </a>
-
                         <!-- item-->
                         <a href="{{ url('index/it') }}" class="dropdown-item notify-item language" data-lang="it" title="Italian">
                             <img src="{{ URL::asset('build/images/flags/italy.svg') }}" alt="user-image" class="me-2 rounded" height="18">
                             <span class="align-middle">Italiana</span>
                         </a>
-
                         <!-- item-->
                         <a href="{{ url('index/ru') }}" class="dropdown-item notify-item language" data-lang="ru" title="Russian">
                             <img src="{{ URL::asset('build/images/flags/russia.svg') }}" alt="user-image" class="me-2 rounded" height="18">
                             <span class="align-middle">русский</span>
                         </a>
-
                         <!-- item-->
                         <a href="{{ url('index/ch') }}" class="dropdown-item notify-item language" data-lang="ch" title="Chinese">
                             <img src="{{ URL::asset('build/images/flags/china.svg') }}" alt="user-image" class="me-2 rounded" height="18">
                             <span class="align-middle">中国人</span>
                         </a>
-
                         <!-- item-->
                         <a href="{{ url('index/fr') }}" class="dropdown-item notify-item language" data-lang="fr" title="French">
                             <img src="{{ URL::asset('build/images/flags/french.svg') }}" alt="user-image" class="me-2 rounded" height="18">
                             <span class="align-middle">français</span>
                         </a>
-
                         <!-- item-->
                         <a href="{{ url('index/ae') }}" class="dropdown-item notify-item language" data-lang="ae" title="Arabic">
                             <img src="{{URL::asset('build/images/flags/ae.svg')}}" alt="user-image" class="me-2 rounded" height="18">
@@ -240,7 +212,6 @@
                         </a>
                     </div>
                 </div> --}}
-
                 {{-- <div class="dropdown topbar-head-dropdown ms-1 header-item">
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class='bx bx-category-alt fs-22'></i>
@@ -257,7 +228,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="p-2">
                             <div class="row g-0">
                                 <div class="col">
@@ -279,7 +249,6 @@
                                     </a>
                                 </div>
                             </div>
-
                             <div class="row g-0">
                                 <div class="col">
                                     <a class="dropdown-icon-item" href="#!">
@@ -303,7 +272,6 @@
                         </div>
                     </div>
                 </div> --}}
-
                 {{-- <div class="dropdown topbar-head-dropdown ms-1 header-item">
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" id="page-header-cart-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
                         <i class='bx bx-shopping-bag fs-22'></i>
@@ -352,7 +320,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="d-block dropdown-item dropdown-item-cart text-wrap px-3 py-2">
                                     <div class="d-flex align-items-center">
                                         <img src="{{ URL::asset('build/images/products/img-2.png') }}" class="me-3 rounded-circle avatar-sm p-2 bg-light" alt="user-pic">
@@ -372,7 +339,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="d-block dropdown-item dropdown-item-cart text-wrap px-3 py-2">
                                     <div class="d-flex align-items-center">
                                         <img src="{{ URL::asset('build/images/products/img-3.png') }}" class="me-3 rounded-circle avatar-sm p-2 bg-light" alt="user-pic">
@@ -393,7 +359,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="d-block dropdown-item dropdown-item-cart text-wrap px-3 py-2">
                                     <div class="d-flex align-items-center">
                                         <img src="{{ URL::asset('build/images/products/img-6.png') }}" class="me-3 rounded-circle avatar-sm p-2 bg-light" alt="user-pic">
@@ -414,7 +379,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="d-block dropdown-item dropdown-item-cart text-wrap px-3 py-2">
                                     <div class="d-flex align-items-center">
                                         <img src="{{ URL::asset('build/images/products/img-5.png') }}" class="me-3 rounded-circle avatar-sm p-2 bg-light" alt="user-pic">
@@ -443,14 +407,12 @@
                                     <h5 class="m-0" id="cart-item-total">$1258.58</h5>
                                 </div>
                             </div>
-
                             <a href="apps-ecommerce-checkout" class="btn btn-success text-center w-100">
                                 Checkout
                             </a>
                         </div>
                     </div>
                 </div> --}}
-
                 @if (Auth::user()->hasRole('superadministrador') || Auth::user()->hasRole('Adminstrador'))
                     <!-- ////////////// Reportes //////////////// -->
                     <div class="ms-1 header-item  d-sm-flex">
@@ -458,7 +420,6 @@
                         <i class='ri-file-list-fill fs-22'></i>
                         </button>    
                     </div>
-
                     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
                         <div class="offcanvas-header">
                             <h5 id="offcanvasRightLabel">Reportes</h5>
@@ -504,7 +465,6 @@
                                         <option value="19">Barranquilla</option>
                                     </select>
                                 </div>
-                                
                                 <div class="mb-3">
                                     <label class="form-label" for="fechaInicio">Fecha Inicio</label>
                                     <input type="text" class="form-control flatpickr-input accion" id="fechaInicio" placeholder="Fecha Inicio" data-provider="flatpickr">
@@ -518,9 +478,6 @@
                                         <i class="ri-file-pdf-fill label-icon align-middle fs-16 me-2"></i> Excel
                                     </a>
                                 </div>
-
-                               
-
                                 <script>
                                     document.getElementById('generarPdfBtn').addEventListener('click', function () {
                                         var fechaInicio = document.getElementById('fechaInicio').value;
@@ -529,17 +486,13 @@
                                         var Planta = document.getElementById('Planta').value;
                                         console.log(Tipo);
                                         var registroId = "tu_valor_aqui";  // Reemplaza "tu_valor_aqui" con la lógica para obtener el ID de tu registro
-
-
                                         if (fechaInicio === "") {
                                             fechaInicio = 1
                                         }
                                         if ( fechaFin === "") {
                                             fechaFin = 1
                                         }
-
                                         var pdfUrl = 'Prueba/' + fechaInicio + '/' + fechaFin+ '/' + Tipo+ '/' + Planta;
-                                        
                                         window.open(pdfUrl, '_blank');
                                     });
                                 </script>
@@ -548,7 +501,6 @@
                     </div>
                     <!-- ////////////////////////////// --> 
                 @endif
-
                 <div class="ms-1 header-item d-none d-sm-flex">
                     <button type="button"
                         class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none"
@@ -556,24 +508,18 @@
                         <i class='bx bx-fullscreen fs-22'></i>
                     </button>
                 </div>
-
-                
-            
-
                 <div class="ms-1 header-item d-none d-sm-flex">
                     <button type="button"
                         class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle light-dark-mode shadow-none">
                         <i class='bx bx-moon fs-22'></i>
                     </button>
                 </div>
-
                 {{-- <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
                         <i class='bx bx-bell fs-22'></i>
                         <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger">3<span class="visually-hidden">unread messages</span></span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-notifications-dropdown">
-
                         <div class="dropdown-head bg-primary bg-pattern rounded-top">
                             <div class="p-3">
                                 <div class="row align-items-center">
@@ -585,7 +531,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="px-2 pt-2">
                                 <ul class="nav nav-tabs dropdown-tabs nav-tabs-custom" data-dropdown-tabs="true" id="notificationItemsTab" role="tablist">
                                     <li class="nav-item waves-effect waves-light">
@@ -605,9 +550,7 @@
                                     </li>
                                 </ul>
                             </div>
-
                         </div>
-
                         <div class="tab-content position-relative" id="notificationItemsTabContent">
                             <div class="tab-pane fade show active py-2 ps-2" id="all-noti-tab" role="tabpanel">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
@@ -637,7 +580,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="text-reset notification-item d-block dropdown-item position-relative">
                                         <div class="d-flex">
                                             <img src="{{URL::asset('build/images/users/avatar-2.jpg')}}" class="me-3 rounded-circle avatar-xs flex-shrink-0" alt="user-pic">
@@ -661,7 +603,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="text-reset notification-item d-block dropdown-item position-relative">
                                         <div class="d-flex">
                                             <div class="avatar-xs me-3 flex-shrink-0">
@@ -686,7 +627,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="text-reset notification-item d-block dropdown-item position-relative">
                                         <div class="d-flex">
                                             <img src="{{URL::asset('build/images/users/avatar-8.jpg')}}" class="me-3 rounded-circle avatar-xs flex-shrink-0" alt="user-pic">
@@ -709,15 +649,12 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="my-3 text-center view-all">
                                         <button type="button" class="btn btn-soft-success waves-effect waves-light">View
                                             All Notifications <i class="ri-arrow-right-line align-middle"></i></button>
                                     </div>
                                 </div>
-
                             </div>
-
                             <div class="tab-pane fade py-2 ps-2" id="messages-tab" role="tabpanel" aria-labelledby="messages-tab">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <div class="text-reset notification-item d-block dropdown-item">
@@ -742,7 +679,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="text-reset notification-item d-block dropdown-item">
                                         <div class="d-flex">
                                             <img src="{{URL::asset('build/images/users/avatar-2.jpg')}}" class="me-3 rounded-circle avatar-xs" alt="user-pic">
@@ -766,7 +702,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="text-reset notification-item d-block dropdown-item">
                                         <div class="d-flex">
                                             <img src="{{URL::asset('build/images/users/avatar-6.jpg')}}" class="me-3 rounded-circle avatar-xs" alt="user-pic">
@@ -790,7 +725,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="text-reset notification-item d-block dropdown-item">
                                         <div class="d-flex">
                                             <img src="{{URL::asset('build/images/users/avatar-8.jpg')}}" class="me-3 rounded-circle avatar-xs" alt="user-pic">
@@ -813,7 +747,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="my-3 text-center view-all">
                                         <button type="button" class="btn btn-soft-success waves-effect waves-light">View
                                             All Messages <i class="ri-arrow-right-line align-middle"></i></button>
@@ -821,7 +754,6 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade p-4" id="alerts-tab" role="tabpanel" aria-labelledby="alerts-tab"></div>
-
                             <div class="notification-actions" id="notification-actions">
                                 <div class="d-flex text-muted justify-content-center">
                                     Select <div id="select-content" class="text-body fw-semibold px-1">0</div> Result <button type="button" class="btn btn-link link-danger p-0 ms-3" data-bs-toggle="modal" data-bs-target="#removeNotificationModal">Remove</button>
@@ -830,14 +762,11 @@
                         </div>
                     </div>
                 </div> --}}
-
-
                 <div class="ms-1 header-item  d-sm-flex">
                     <a href="https://web.whatsapp.com/send?phone=313 2163045" target="_blank" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle">
                         <i class='bx bx-support fs-22 text-success'></i>
                     </a>
                 </div>
-
                 <div class="dropdown topbar-head-dropdown ms-1 header-item">
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="mdi mdi-update fs-22"></i>
@@ -858,8 +787,6 @@
                         </div>
                     </div>
                 </div>
-
-
                 <div class="dropdown ms-sm-3 header-item topbar-user">
                     <button type="button" class="btn shadow-none" id="page-header-user-dropdown"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -867,7 +794,6 @@
                             {{-- <img class="rounded-circle header-profile-user"
                                 src="@if (Auth::user()->imgUser != '') {{ URL::asset('storage/imagenesPerfil' . Auth::user()->imgUser) }}@else{{ URL::asset('build/images/users/avatar-1.jpg') }} @endif"
                                 alt="Header Avatar"> --}}
-
                                 <img class="rounded-circle header-profile-user"
                                 src="@if (Auth::user()->imgUser != '') {{ Auth::user()->imgUser }}@else{{ asset('imagenes/avatar.png') }} @endif"
                                 alt="Header Avatar">                                
@@ -900,8 +826,6 @@
                             class="align-middle">Usuarios</span></a>
                         <div class="dropdown-divider"></div>
                         @endif
-
-                    
                         {{-- <a class="dropdown-item" href="pages-profile"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>$5971.67</b></span></a> --}}
                         {{-- <a class="dropdown-item" href="auth-lockscreen-basic"><i class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Lock screen</span></a> --}}
                         <a class="dropdown-item " href="javascript:void();"
@@ -918,7 +842,6 @@
         </div>
     </div>
 </header>
-
 <!-- removeNotificationModal -->
 <div id="removeNotificationModal" class="modal fade zoomIn" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -942,11 +865,9 @@
                         It!</button>
                 </div>
             </div>
-
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
 @section('js')
 <script src="/js/marcas/marcas.js?v=<?php echo date('YmdHis'); ?>"></script>
 @stop

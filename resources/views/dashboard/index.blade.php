@@ -21,20 +21,18 @@
                                 </h5>
                             </div>
                         </div>
-                        <div class="d-flex align-items-end justify-content-between mt-4">
+                        {{-- <div class="d-flex align-items-end justify-content-between mt-4">
                             <div>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value"
                                         data-target="559.25" v-text="conteoContratos">559.25</span>
                                 </h4>
-                                {{-- <a href="" class="text-decoration-underline">View net
-                                    earnings</a> --}}
                             </div>
                             <div class="avatar-sm flex-shrink-0">
                                 <span class="avatar-title bg-success-subtle rounded fs-3">
                                     <i class="bx  bx-file text-success"></i>
                                 </span>
                             </div>
-                        </div>
+                        </div> --}}
                     </div><!-- end card body -->
                 </div>
             </div>
@@ -53,19 +51,18 @@
                                 </h5>
                             </div>
                         </div>
-                        <div class="d-flex align-items-end justify-content-between mt-4">
+                        {{-- <div class="d-flex align-items-end justify-content-between mt-4">
                             <div>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value"
                                         data-target="183.35" v-text="conteoUser">183.35</span>
                                 </h4>
-                                {{-- <a href="" class="text-decoration-underline">See details</a> --}}
                             </div>
                             <div class="avatar-sm flex-shrink-0">
                                 <span class="avatar-title bg-warning-subtle rounded fs-3">
                                     <i class="bx bx-user-circle text-warning"></i>
                                 </span>
                             </div>
-                        </div>
+                        </div> --}}
                     </div><!-- end card body -->
                 </div>
             </div>
@@ -84,25 +81,22 @@
                                 </h5>
                             </div>
                         </div>
-                        <div class="d-flex align-items-end justify-content-between mt-4">
+                        {{-- <div class="d-flex align-items-end justify-content-between mt-4">
                             <div>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value"
                                         data-target="183.35" v-text="conteoTerceros">183.35</span>
                                 </h4>
-                                {{-- <a href="" class="text-decoration-underline">See details</a> --}}
                             </div>
                             <div class="avatar-sm flex-shrink-0">
                                 <span class="avatar-title bg-success-subtle rounded fs-3">
                                     <i class="bx bx-user-check text-success"></i>
                                 </span>
                             </div>
-                        </div>
+                        </div> --}}
                     </div><!-- end card body -->
                 </div>
             </div>
         </div>
-
-
         @if (Auth::user()->hasRole('admin') || Auth::user()->hasRole('Adminstrador') || Auth::user()->hasRole('superadministrador') || Auth::user()->hasRole('observador'))
             <div class="row" id="dash_b">
                 <div class="col">
@@ -117,11 +111,27 @@
                                 </div>
                             </div>
                         </div>
-                        
                     </div>
                 </div>
             </div>
         @endif
+        <div class="row">
+            <div class="col-6 mb-3 card">
+                <comp-grafica-reservas></comp-grafica-reservas>
+            </div>
+            <div class="col-6  mb-3 card">
+                <comp-grafica-lineas></comp-grafica-lineas>
+            </div>
+            <div class="col-6  mb-3 card">
+                <comp-grafica-radar></comp-grafica-radar>
+            </div>
+            <div class="col-6  mb-3 card">
+                <comp-grafica-polar></comp-grafica-polar>
+            </div>
+            <div class="col-6  mb-3 card">
+                <comp-grafica-donut></comp-grafica-donut>
+            </div>
+        </div>
     </div>
 @stop
 @section('css')
@@ -135,6 +145,7 @@
         integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.19/css/lightgallery.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     {{-- <link rel="stylesheet" type="text/css" href="{{asset('Slicebox-master/css/demo.css')}}" /> --}}
     <link rel="stylesheet" type="text/css" href="{{ asset('Slicebox-master/css/slicebox.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('Slicebox-master/css/custom.css') }}" />
@@ -168,6 +179,11 @@
     <!-- <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js" defer></script> -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="/js/dashboard/components/comp-reservas.js"></script>
+    <script src="/js/dashboard/components/comp-grafica-donut.js"></script>
+    <script src="/js/dashboard/components/comp-grafica-lineas.js"></script>
+    <script src="/js/dashboard/components/comp-grafica-polar.js"></script>
+    <script src="/js/dashboard/components/comp-grafica-radar.js"></script>
     <script src="/js/global.js"></script>
     <script src="/js/dashboard/dashboard.js?v=<?php echo date('YmdHis'); ?>"></script>
     <script type="text/javascript" src="{{ asset('Slicebox-master/js/jquery.slicebox.js') }}"></script>

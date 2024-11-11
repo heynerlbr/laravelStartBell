@@ -58,11 +58,29 @@ class ElementosReservablesController extends Controller
     }
 
 
+    public function validarReservaExistente($fecha_inicio, $fecha_fin, $hora_inicio, $hora_fin, $id_elemento) {
+        // Buscar si existe una reserva en el mismo rango de fechas y con horas que se solapen
+        $reservaExistente = elementos_reservas::where('id_elemento', $id_elemento)
+            ->where('fecha_inicio', '<=', $fecha_fin)
+            ->where('fecha_fin', '>=', $fecha_inicio)
+            ->where(function($query) use ($hora_inicio, $hora_fin) {
+                $query->whereBetween('hora_inicio', [$hora_inicio, $hora_fin])
+                      ->orWhereBetween('hora_fin', [$hora_inicio, $hora_fin])
+                      ->orWhere(function($query) use ($hora_inicio, $hora_fin) {
+                          $query->where('hora_inicio', '<=', $hora_inicio)
+                                ->where('hora_fin', '>=', $hora_fin);
+                      });
+            })
+            ->first();
+    
+        return $reservaExistente;
+    }
     public function crear(Request $request) {
         try {
             // Validación de entrada
             $validator = Validator::make($request->all(), [
-                'fecha' => 'required|date',
+                'fecha_inicio' => 'required|date',
+                'fecha_fin' => 'required|date',
                 'id_elemento' => 'required|integer',
                 'hora_inicio' => 'required',
                 'hora_fin' => 'required',
@@ -72,48 +90,76 @@ class ElementosReservablesController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'titulo' => 'Error de validación',
-                    'respuesta' => $validator->errors(),
+                    'respuesta' => $validator->errors()->first(), // Obtiene el primer mensaje de error
+                    'errores' => $validator->errors(), // Envía todos los errores si los necesitas
                     'tipo' => 'error'
-                ], 422); // Código de estado HTTP 422 para datos no válidos
+                ], 422);
             }
     
+             // Modificamos el parsing de la hora para aceptar formato 24 horas
+                try {
+                    $horaInicio = Carbon::createFromFormat('H:i', $request->input('hora_inicio'));
+                    $horaFin = Carbon::createFromFormat('H:i', $request->input('hora_fin'));
+                } catch (\Exception $e) {
+                    return response()->json([
+                        'titulo' => 'Error de formato',
+                        'respuesta' => 'El formato de la hora no es válido',
+                        'error' => $e->getMessage(),
+                        'tipo' => 'error'
+                    ], 422);
+                }
 
-            $horaInicio = Carbon::createFromFormat('g:i A', $request->input('hora_inicio'));
-            $horaFin = Carbon::createFromFormat('g:i A', $request->input('hora_fin'));
-    
-            // Crear el registro
-            // $reserva = elementos_reservas::create($request->all());
 
-            elementos_reservas::create([
-                'fecha' => $request->input('fecha'),
-                'id_elemento' => $request->input('id_elemento'),
-                'hora_inicio' => $horaInicio->format('H:i:s'), // Formato para tiempo en MySQL
-                'hora_fin' => $horaFin->format('H:i:s'), // Formato para tiempo en MySQL
-                'id_usuario_crea' => $request->input('id_usuario_crea'),
-            ]);
+                 // Verificar si existe una reserva en el mismo horario
+                $reservaExistente = $this->validarReservaExistente(
+                    $request->input('fecha_inicio'),
+                    $request->input('fecha_fin'),
+                    $horaInicio->format('H:i:s'),
+                    $horaFin->format('H:i:s'),
+                    $request->input('id_elemento')
+                );
+
+                if ($reservaExistente) {
+                    return response()->json([
+                        'titulo' => 'Error de disponibilidad',
+                        'respuesta' => 'Ya existe una reserva para este elemento en el mismo horario',
+                        'tipo' => 'error'
+                    ], 409);
+                }
+                
+
+                elementos_reservas::create([
+                    'fecha_inicio' => $request->input('fecha_inicio'),
+                    'fecha_fin' => $request->input('fecha_fin'),
+                    'id_elemento' => $request->input('id_elemento'),
+                    'hora_inicio' => $horaInicio->format('H:i:s'),
+                    'hora_fin' => $horaFin->format('H:i:s'),
+                    'id_usuario_crea' => $request->input('id_usuario_crea'),
+                ]);
     
             return response()->json([
                 'titulo' => 'Éxito',
                 'respuesta' => 'Se creó el registro correctamente',
                 'tipo' => 'success'
-            ], 201); // Código de estado HTTP 201 para creación exitosa
+            ], 201);
         } catch(QueryException $e) {
-            // Manejar excepción de consulta de base de datos
             return response()->json([
                 'titulo' => 'Error de base de datos',
-                'respuesta' => 'No se pudo crear el registro debido a un error en la base de datos',
+                'respuesta' => 'Error al guardar en la base de datos',
+                'error' => $e->getMessage(), // Mensaje específico del error
+                'codigo' => $e->getCode(), // Código del error
                 'tipo' => 'error'
-            ], 500); // Código de estado HTTP 500 para error interno del servidor
+            ], 500);
         } catch(\Exception $e) {
-            // Capturar otras excepciones
             return response()->json([
                 'titulo' => 'Error',
                 'respuesta' => 'Ocurrió un error inesperado',
+                'error' => $e->getMessage(), // Mensaje específico del error
+                'codigo' => $e->getCode(), // Código del error
                 'tipo' => 'error'
-            ], 500); // Código de estado HTTP 500 para error interno del servidor
+            ], 500);
         }
     }
-    
 
     
     public function Mostrar(){

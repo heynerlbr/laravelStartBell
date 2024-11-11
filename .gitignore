@@ -15,3 +15,5 @@ yarn-error.log
 /public/*.zip
 /public
 /storage
+/.vscode
+.env
