@@ -22,13 +22,10 @@ class LugaresController extends Controller
         try{
             // $lugares =  lugares::get();
             $role = Auth::user()->roles->first()->name;
-
             // dd($role);
-            
             $id_usuario_crea = Auth::user()->id;
             $id_empresa = Auth::user()->idEmpresa;
             // dd($id_empresa);
-
             if ($role=='admin') {
             $lugares=DB::table('lugares')
                     ->selectRaw('lugares.*,municipios.municipio,departamentos.departamento ,empresas_sistemas.nombre as nomEmpresa')
@@ -38,36 +35,29 @@ class LugaresController extends Controller
                     ->get();
             }else{
                 $lugares=DB::table('lugares')
-                ->selectRaw('lugares.*,municipios.municipio,departamentos.departamento ,empresas_sistemas.nombre as nomEmpresa')
-                ->leftJoin('municipios', 'municipios.id_municipio', '=', 'lugares.IdMunicipio')
-                ->leftJoin('departamentos', 'departamentos.id_departamento', '=', 'municipios.departamento_id')
-                ->leftJoin('empresas_sistemas', 'empresas_sistemas.id', '=', 'lugares.idEmpresa')
-                ->where('lugares.id_usuario_crea','=',$id_usuario_crea)
-                ->orWhere('lugares.id_empresa','=',$id_empresa)
-                ->get();
+                        ->selectRaw('lugares.*,municipios.municipio,departamentos.departamento ,empresas_sistemas.nombre as nomEmpresa')
+                        ->leftJoin('municipios', 'municipios.id_municipio', '=', 'lugares.IdMunicipio')
+                        ->leftJoin('departamentos', 'departamentos.id_departamento', '=', 'municipios.departamento_id')
+                        ->leftJoin('empresas_sistemas', 'empresas_sistemas.id', '=', 'lugares.idEmpresa')
+                        ->where('lugares.id_usuario_crea','=',$id_usuario_crea)
+                        ->orWhere('lugares.id_empresa','=',$id_empresa)
+                        ->get();
+               
             }
-
             $municipios=DB::table('municipios')
                     ->selectRaw('municipios.*, departamentos.departamento')
                     ->leftJoin('departamentos', 'departamentos.id_departamento', '=', 'municipios.departamento_id')
                     ->get();
-
-            
             $queryEmpresa=DB::table('empresas_sistemas');
-
             switch ($role) {
                 case 'admin':
                     break;
-                    
                     default:
                     # code...
                     $queryEmpresa->where('id_empresa','=', $id_empresa);
                     break;
             }
-
             $empresas=$queryEmpresa->get();
-                    
-
             $mensaje = ["Titulo"=>"Exito","Respuesta"=>"la informaci&oacuten satisfatoria","Tipo"=>"success",
             "lugares"=>$lugares,"municipios"=>$municipios,"empresas"=>$empresas]; 
         }catch(\Exception $e){

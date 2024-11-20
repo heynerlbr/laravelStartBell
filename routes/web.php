@@ -11,6 +11,7 @@ use  App\Http\Controllers\LugaresController;
 use  App\Http\Controllers\ElementosLugaresController; 
 use  App\Http\Controllers\ReservasController; 
 use  App\Http\Controllers\AuthController; 
+use App\Http\Controllers\QrCodeController;
 //modelos para filemaker
 use App\Models\User;
 use App\Models\Role;
@@ -118,8 +119,6 @@ Route::post('ObtenerReservaElemento', [ElementosLugaresController::class,'Obtene
 Route::post('ActualizarReservaElemento', [ElementosLugaresController::class,'ActualizarReservaElemento'])->middleware('auth');
 Route::post('EliminarReservaElemento', [ElementosLugaresController::class,'EliminarReservaElemento'])->middleware('auth');
 Route::post('CambiarEstadoReserva', [ElementosLugaresController::class,'CambiarEstadoReserva'])->middleware('auth');
-
-
 //reservas
 Route::get('reservas', [ReservasController::class,'index'])->middleware('auth');
 Route::post('ListarReservas', [ReservasController::class,'Listar'])->middleware('auth');
@@ -127,9 +126,10 @@ Route::post('EliminarReserva', [ReservasController::class,'Eliminar'])->middlewa
 Route::post('CrearReserva', [ReservasController::class,'Crear'])->middleware('auth');
 Route::post('MostrarReserva', [ReservasController::class,'Mostrar'])->middleware('auth');
 Route::post('ActualizarReserva', [ReservasController::class,'Actualizar'])->middleware('auth');
-
 //
 Route::post('/auth/google', [AuthController::class, 'googleAuth']);
+//qr
+Route::get('/generar-qr', [QrCodeController::class, 'generarQr'])->name('generar.qr');
 //rutas de limpieza
 Route::get('/clear-cache', function() {
     echo Artisan::call('optimize');
@@ -141,8 +141,64 @@ Route::get('/clear-cache', function() {
 //      return 'what you want';
 });
 //para host compartidos
+// Route::get('/storage-link', function () {
+//     $targetFolder=storage_path('app/public');
+//     $linkFolder=$_SERVER['DOCUMENT_ROOT'].'/storage';
+//     symlink($targetFolder,$linkFolder);
+// });
+// Route::get('/storage-link', function () {
+//     $targetFolder = storage_path('app/public');
+//     $linkFolder = $_SERVER['DOCUMENT_ROOT'] . '/storage';
+
+//     if (!file_exists($linkFolder)) {
+//         mkdir($linkFolder, 0777, true);
+//     }
+
+//     $files = scandir($targetFolder);
+//     foreach ($files as $file) {
+//         if ($file !== '.' && $file !== '..') {
+//             copy($targetFolder . '/' . $file, $linkFolder . '/' . $file);
+//         }
+//     }
+
+//     return 'Enlace simbólico emulado copiando archivos.';
+// });
 Route::get('/storage-link', function () {
-    $targetFolder=storage_path('app/public');
-    $linkFolder=$_SERVER['DOCUMENT_ROOT'].'/storage';
-    symlink($targetFolder,$linkFolder);
+    $sourceFolder = storage_path('app/public');
+    $destinationFolder = $_SERVER['DOCUMENT_ROOT'] . '/storage';
+
+    // Crear el directorio destino si no existe
+    if (!file_exists($destinationFolder)) {
+        mkdir($destinationFolder, 0777, true);
+    }
+
+    // Función para copiar archivos y directorios recursivamente
+    function copyFiles($source, $destination) {
+        $files = scandir($source);
+
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+
+            $sourcePath = $source . DIRECTORY_SEPARATOR . $file;
+            $destinationPath = $destination . DIRECTORY_SEPARATOR . $file;
+
+            if (is_dir($sourcePath)) {
+                // Si es un directorio, crear y copiar recursivamente
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0777, true);
+                }
+                copyFiles($sourcePath, $destinationPath);
+            } else {
+                // Si es un archivo, copiarlo
+                copy($sourcePath, $destinationPath);
+            }
+        }
+    }
+
+    // Copiar todo del source al destino
+    copyFiles($sourceFolder, $destinationFolder);
+
+    return 'Archivos copiados exitosamente.';
 });

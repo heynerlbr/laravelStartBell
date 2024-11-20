@@ -5,7 +5,6 @@
 @stop
 @section('content')
     <div id="app" style="padding: 1%;">
-
         <div id="ModalReserva" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -23,8 +22,12 @@
                             <input type="text" v-model='registro.nombreElemento' class="form-control" disabled>
                         </div>
                         <div class="mb-1">
-                            <label for="">Fecha</label>
-                            <input type="date" v-model='registro.fecha' class="form-control">
+                            <label for="">Fecha Inicio</label>
+                            <input type="date" v-model='registro.fecha_inicio' class="form-control">
+                        </div>
+                        <div class="mb-1">
+                            <label for="">Fecha Fin</label>
+                            <input type="date" v-model='registro.fecha_fin' class="form-control">
                         </div>
                         <div class="mb-1">
                             <label for="">Hora Inicio</label>
@@ -34,13 +37,11 @@
                             <label for="">Hora Fin</label> 
                             <input type="time" v-model='registro.hora_fin' class="form-control">
                         </div>
-                    
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
                         <button type="button" class="btn btn-success" @click='Actualizar()'>Actualizar</button>
                     </div>
-
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
@@ -58,7 +59,8 @@
                         <th>Lugar</th>
                         <th>Elemento</th>
                         <th>Usuario Reserva</th>
-                        <th>Fecha</th>
+                        <th>Fecha Inico</th>
+                        <th>Fecha Fin</th>
                         <th>Hora Inicio</th>
                         <th>Hora Fin</th>
                         <th> Estado</th>
@@ -73,18 +75,11 @@
                             </td>
                             <td>@{{item.nombreLugar }}</td>
                             <td>@{{item.nombreElemento }}</td>
-                            <td>@{{item.name }}</td>
-                            <td>@{{item.fecha }}</td>
+                            <td>@{{item.nombreUsuarioReserva }}</td>
+                            <td>@{{item.fecha_inicio }} </td>
+                            <td>@{{item.fecha_fin }}</td>
                             <td>@{{item.hora_inicio }}</td>
                             <td>@{{item.hora_fin }}</td>
-                            {{-- <td>
-                                <a href="javascript:void(0);" class="link-info fs-15" :id="item.id" @click="Mostrar(item.id)">
-                                    <i class="ri-pencil-fill"></i>
-                                </a>
-                                <a href="javascript:void(0);" class="link-danger fs-15" :id="item.id" @click="Eliminar(item.id)">
-                                    <i class="ri-delete-bin-fill align-bottom"></i>
-                                </a>
-                            </td> --}}
                             <td>
                                 <span v-if="item.estado == 0" class="badge bg-primary">Creado</span>
                                 <span v-else-if="item.estado == 1" class="badge bg-success">Confirmado</span>

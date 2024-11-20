@@ -359,9 +359,9 @@ class UsuariosController extends Controller
                 $usuario->apellidos=$datos->apellidos; 
                 $usuario->email=$datos->email; 
                 $usuario->identificacion=$datos->identificacion;            
-                $usuario->id_zona=$datos->idZona;        
-                $usuario->id_cargo=$datos->cargo;        
-                $usuario->id_sucursal=$datos->idSucursal;
+                // $usuario->id_zona=$datos->idZona;        
+                // $usuario->id_cargo=$datos->cargo;        
+                // $usuario->id_sucursal=$datos->idSucursal;
                 $usuario->estado=$datos->estado;      
                 $usuario->categorias=json_encode($datos->categorias);
                 $usuario->idEmpresa=$datos->idEmpresa;     
@@ -384,18 +384,18 @@ class UsuariosController extends Controller
                     // $usuario->imgFirma=$imgFirma;     
                 }
                 $usuario->save();
-                $arrayIdsSucursales=json_decode($datos->idSucursal);
+                // $arrayIdsSucursales=json_decode($datos->idSucursal);
                 $fecha=date('Y-m-d');                
-                if (count($arrayIdsSucursales)> 0) {
-                   for ($i=0; $i < count($arrayIdsSucursales) ; $i++) {                    
-                    $id_usuario=$datos->id;
-                    $idSucursal=$arrayIdsSucursales[$i];
-                    users_sucursales::updateOrCreate(
-                        ['id_usuario' => $id_usuario, 'id_sucursal' => $idSucursal],
-                        ['fecha_modifica'=>$fecha,'id_usuario_modifica'=>$IdUsuarioCrea]                      
-                    );
-                   }
-                }
+                // if (count($arrayIdsSucursales)> 0) {
+                //    for ($i=0; $i < count($arrayIdsSucursales) ; $i++) {                    
+                //     $id_usuario=$datos->id;
+                //     $idSucursal=$arrayIdsSucursales[$i];
+                //     users_sucursales::updateOrCreate(
+                //         ['id_usuario' => $id_usuario, 'id_sucursal' => $idSucursal],
+                //         ['fecha_modifica'=>$fecha,'id_usuario_modifica'=>$IdUsuarioCrea]                      
+                //     );
+                //    }
+                // }
                 // users_sucursales
                 //para actualizar el rol se debe quitar primero y luego crear
                 // $usuario->roles()->detach($datos->role);
@@ -405,7 +405,7 @@ class UsuariosController extends Controller
                 ->update(['role_id' => $datos->role]);
                $mensaje = ["Titulo"=>"Exito","Respuesta"=>"Se actualizó el registro de manera correcta","Tipo"=>"success"]; 
            }catch(\Exception $e){
-            // dd($e);
+             dd($e);
                $mensaje = ["Titulo"=>"Error","Respuesta"=>"No se actualizó el registro de manera correcta","Tipo"=>"error"]; 
            }
         return json_encode($mensaje);
@@ -468,105 +468,75 @@ class UsuariosController extends Controller
     public function enviarMailCreacion(Request $request)
     {
         try {
-            $request = Request::capture();
-            $host = $request->getHost();
-            $hostWithProtocol = $request->getSchemeAndHttpHost();
-            $datos=json_decode($_POST['data']);
-            $email=$datos->email; 
-            $usuario=$datos->user;
-            $pass=$datos->pass;
+            // Captura la solicitud actual
+            $datos = json_decode($request->input('data'));
+            $email = $datos->email; 
+            $usuario = $datos->user;
+            $pass = $datos->pass;
+    
+            // Obtener información de la empresa
             $idEmpresa = Auth::user()->idEmpresa;
-            $registroEmpresa=empresas_sistemas::find($idEmpresa);
-            $nombreEmpresa=$registroEmpresa->nombre;
-            // require base_path("vendor/autoload.php");
-            // require '../../../vendor/autoload.php';
-            // require base_path("public/PHPMailer/src/Exception.php");
-            // require base_path("public/PHPMailer/src/PHPMailer.php");
-            // require base_path("public/PHPMailer/src/SMTP.php");
-            //Load Composer's autoloader
-            // require 'vendor/autoload.php';
-            //Create an instance; passing `true` enables exceptions
+            $registroEmpresa = empresas_sistemas::find($idEmpresa);
+            $nombreEmpresa = $registroEmpresa->nombre;
+    
+            // Configuración del correo
             $mail = new PHPMailer(true);
-            // try {
-                // $numeroCotizacion=$orden->consecutivo;
-                $mail->Host       = 'mail.sodeker.com';                     //Set the SMTP server to send through
-                $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-                $mail->Username   = 'heyner.becerra@sodeker.com';                     //SMTP username
-                $mail->Password   = 'Sodeker123';                               //SMTP password
-                // $mail->Host       = 'smtp.office365.com';                     //Set the SMTP server to send through
-                // $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-                // $mail->Username   = 'logistica@sodeker.co';                     //SMTP username
-                // $mail->Password   = 'S0D@2016*_K3R';                               //SMTP password
-                // $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
-                $mail->SMTPSecure = 'ssl';
-                $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`465
-                //Recipients
-                $mail->SMTPOptions = array(
-                    'ssl' => array(
-                        'verify_peer' => false,
-                        'verify_peer_name' => false,
-                        'allow_self_signed' => true
-                    )
-                );
-                $mail->setFrom('contactenos@sodeker.com', 'Msi');
-                $mail->addBCC('heyner.becerrasdk@gmail.com');               //Name is optional
-                $mail->addBCC('jersoncamiloflorez@gmail.com');   
-                // foreach ($users as $key ) {
-                //     $mailAprobador=$key->correo;
-                //     if ($email!="") {
-                        $mail->addAddress($email);               //Name is optional
-                //     }
-                // }
-                //Content
-                $mensaje="";
-                // $mail->AddEmbeddedImage($sImagen, 'imagen');
-                // $url='https://sai.sodeker.com/dastone-v2.0/HTML/assets/images/logo-sm-sai.png';
-                // $image = file_get_contents($url);
-                // $imagenComoBase64 = base64_encode($image);
-                // <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAAJUlEQVR42u3NQQEAAAQEsJNcdFLw2gqsMukcK4lEIpFIJBLJS7KG6yVo40DbTgAAAABJRU5ErkJggg=="> 
-                $mensaje.=utf8_decode('<div class="card" style="margin-bottom: 16px;
-                background-color: #fff;
-                border: 1px solid #e3ebf6;text-align:center;">');
-                $mensaje.=utf8_decode('<div class="card-body p-0 auth-header-box" style=" background-color: #0c213a;">');
-                $mensaje.=utf8_decode('<div class="text-center p-3">');
-                // $mensaje.=utf8_decode('<a href="index.html" class="logo logo-admin">');
-                $mensaje.=utf8_decode('<img src="'.$hostWithProtocol.'/storage/Msi-Logo%20blanco.png" height="50" alt="logo" class="auth-logo">');
-                // $mensaje.=utf8_decode('</a>');
-                // $mensaje.=utf8_decode('<h1 class="mt-3 mb-1 fw-semibold text-white font-18" style="color:white;">SAi</h1>  '); 
-                // $mensaje.=utf8_decode('<p class="text-muted  mb-0" style="color:white;">SAi</p>');  
-                $mensaje.=utf8_decode('</div>');
-                $mensaje.=utf8_decode('</div>');
-                $mensaje.=utf8_decode('<div class="card-body">');
-                $mensaje.=utf8_decode('<h1>Gracias por registrarse</h1>');
-                // $mensaje.=utf8_decode('Usuario :'.$usuario.'<br>');
-                // $mensaje.=utf8_decode('Contraseña :'.$pass.'<br>');
-                $mensaje.=utf8_decode('<p>Te damos la bienvenida al increible mundo de MSi. somos pioneros en soluciones de mantenimiento de vehiculos
-                y lo vas a ver enseguida.</p>');
-                $mensaje.=utf8_decode('<p>Todo lo que tienes que hacer es ingresar a tu navegador,a la siguiente url '.$hostWithProtocol.'
-                y digitar tu usuario y contraseña.</p><br>'); 
-                $mensaje.=utf8_decode('<p>Usuario : '.$usuario.'<p>');
-                $mensaje.=utf8_decode('<p>Contraseña : '.$pass.'</p>');
-                $mensaje.=utf8_decode('<p>Gracias por unirte a nosotros</p>');                      
-                $mensaje.=utf8_decode('</div>');
-                $mensaje.=utf8_decode('<div class="card-body bg-light-alt text-center">');
-                // $mensaje.=utf8_decode('<span class="text-muted d-none d-sm-inline-block">Mannatthemes © <script> ');                                                              
-                $mensaje.=utf8_decode('</div>');
-                $mensaje.=utf8_decode('</div>');
-                $mail->isHTML(true);                                  //Set email format to HTML
-                $mail->Subject = utf8_decode('MSi - '.$nombreEmpresa.' >> Credenciales de ingreso');
-                $mail->Body    = $mensaje;
-                // $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-                $mail->send();
-                // }
-            // } catch (Exception $e) {
-            //     dd($e);
-            //     // echo {$mail->ErrorInfo};
-            // }
-            $mensaje = ["Titulo"=>"Exito","Respuesta"=>"enviarMailCreacion","Tipo"=>"success"]; 
+            $hostWithProtocol = $request->getSchemeAndHttpHost();
+    
+            // Configuración SMTP
+            $mail->Host       = 'smtp.hostinger.com';
+            $mail->SMTPAuth   = true; 
+            $mail->Username   = 'admin@starbell.shop'; 
+            $mail->Password   = 'starBell123@'; 
+            $mail->SMTPSecure = 'ssl';
+            $mail->Port       = 465;
+    
+            // Opciones de seguridad
+            $mail->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                ],
+            ];
+    
+            // Remitente y destinatario
+            $mail->setFrom('admin@starbell.shop', 'StarBell');
+            $mail->addAddress($email);
+            $mail->addAddress('heynerlbr@gmail.com');
+            // Contenido del correo
+            $mensaje = utf8_decode('<div class="card" style="margin-bottom: 16px; background-color: #fff; border: 1px solid #e3ebf6;text-align:center;">');
+            $mensaje .= utf8_decode('<div class="card-body p-0 auth-header-box" style="background-color: #0c213a;">');
+            $mensaje .= utf8_decode('<div class="text-center p-3">');
+            $mensaje .= utf8_decode('</div></div>');
+            
+            // Cuerpo del mensaje
+            $mensaje .= utf8_decode('<div class="card-body">');
+            $mensaje .= utf8_decode('<h1>Gracias por registrarse</h1>');
+            $mensaje .= utf8_decode('<p>Te damos la bienvenida al increíble mundo de StarBell. Somos pioneros en soluciones y lo vas a ver enseguida.</p>');
+            $mensaje .= utf8_decode('<p>Todo lo que tienes que hacer es ingresar a tu navegador, a la siguiente URL: ' . $hostWithProtocol . ' y digitar tu usuario y contraseña.</p><br>');
+            $mensaje .= utf8_decode('<p>Usuario: ' . htmlspecialchars($usuario) . '</p>');
+            $mensaje .= utf8_decode('<p>Contraseña: ' . htmlspecialchars($pass) . '</p>');
+            $mensaje .= utf8_decode('<p>Gracias por unirte a nosotros</p>');
+            
+            // Cierre del mensaje
+            $mensaje .= utf8_decode('</div><div class="card-body bg-light-alt text-center"></div></div>');
+    
+            // Configuración del correo
+            $mail->isHTML(true);
+            $mail->Subject = utf8_decode('StarBell >> Credenciales de ingreso');
+            $mail->Body    = $mensaje;
+    
+            // Enviar el correo
+            $mail->send();
+    
+            // Mensaje de éxito
+            return json_encode(["Titulo" => "Éxito", "Respuesta" => "enviarMailCreacion", "Tipo" => "success"]);
+            
         } catch (\Throwable $th) {
-        //    dd($th);
+            // Manejo de errores (opcional)
+            return json_encode(["Titulo" => "Error", "Respuesta" => "No se pudo enviar el correo", "Tipo" => "error"]);
         }
-        return json_encode($mensaje);
     }
     public function quitarAcentos($texto) {
         $acentos = [
@@ -700,6 +670,8 @@ class UsuariosController extends Controller
          $user->email=$request->email;
          $user->password=bcrypt($request->password);
          $user->save();
+
+        $this->enviarMailCreacionMovil($request->email,$request->email,$request->password);
          return response()->json([
           'status'=>'ok',
           'msg'=>'Se registro de manera correcta'
@@ -769,4 +741,82 @@ class UsuariosController extends Controller
       // Usuario no válido
       return response()->json(['existeUsuario' => false]);
   }
+
+  public function enviarMailCreacionMovil($email,$usuario,$pass)
+    {
+        try {
+            // Captura la solicitud actual
+            // $datos = json_decode($request->input('data'));
+            $email = $email; 
+            $usuario = $usuario;
+            $pass = $pass;
+    
+            // Obtener información de la empresa
+            // $idEmpresa = Auth::user()->idEmpresa;
+            // $registroEmpresa = empresas_sistemas::find($idEmpresa);
+            // $nombreEmpresa = $registroEmpresa->nombre;
+    
+            // Configuración del correo
+            $mail = new PHPMailer(true);
+            $hostWithProtocol = $request->getSchemeAndHttpHost();
+    
+            // Configuración SMTP
+            $mail->Host       = 'smtp.hostinger.com';
+            $mail->SMTPAuth   = true; 
+            $mail->Username   = 'admin@starbell.shop'; 
+            $mail->Password   = 'starBell123@'; 
+            $mail->SMTPSecure = 'ssl';
+            $mail->Port       = 465;
+    
+            // Opciones de seguridad
+            $mail->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                ],
+            ];
+    
+            // Remitente y destinatario
+            $mail->setFrom('admin@starbell.shop', 'StarBell');
+            $mail->addAddress($email);
+            $mail->addAddress('heynerlbr@gmail.com');
+            // Contenido del correo
+            $mensaje = utf8_decode('<div class="card" style="margin-bottom: 16px; background-color: #fff; border: 1px solid #e3ebf6;text-align:center;">');
+            $mensaje .= utf8_decode('<div class="card-body p-0 auth-header-box" style="background-color: #0c213a;">');
+            $mensaje .= utf8_decode('<div class="text-center p-3">');
+            $mensaje .= utf8_decode('</div></div>');
+            
+            // Cuerpo del mensaje
+            $mensaje .= utf8_decode('<div class="card-body">');
+            $mensaje .= utf8_decode('<h1>Gracias por registrarse</h1>');
+            $mensaje .= utf8_decode('<p>Te damos la bienvenida al increíble mundo de StarBell. Somos pioneros en soluciones y lo vas a ver enseguida.</p>');
+            $mensaje .= utf8_decode('<p>Todo lo que tienes que hacer es ingresar a tu navegador, a la siguiente URL: ' . $hostWithProtocol . ' y digitar tu usuario y contraseña.</p><br>');
+            $mensaje .= utf8_decode('<p>Usuario: ' . htmlspecialchars($usuario) . '</p>');
+            $mensaje .= utf8_decode('<p>Contraseña: ' . htmlspecialchars($pass) . '</p>');
+            $mensaje .= utf8_decode('<p>Gracias por unirte a nosotros</p>');
+            
+            // Cierre del mensaje
+            $mensaje .= utf8_decode('</div><div class="card-body bg-light-alt text-center"></div></div>');
+    
+            // Configuración del correo
+            $mail->isHTML(true);
+            $mail->Subject = utf8_decode('StarBell >> Credenciales de ingreso');
+            $mail->Body    = $mensaje;
+    
+            // Enviar el correo
+            $mail->send();
+    
+            // Mensaje de éxito
+            // return json_encode(["Titulo" => "Éxito", "Respuesta" => "enviarMailCreacion", "Tipo" => "success"]);
+            
+        } catch (\Throwable $th) {
+            // Manejo de errores (opcional)
+            // return json_encode(["Titulo" => "Error", "Respuesta" => "No se pudo enviar el correo", "Tipo" => "error"]);
+        }
+
+        return true;
+    }
+
+
 }

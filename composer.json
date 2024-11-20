@@ -21,6 +21,8 @@
         "laravel/ui": "^3.3",
         "phpmailer/phpmailer": "^6.8",
         "phpoffice/phpspreadsheet": "^1.29",
+        "pusher/pusher-php-server": "^7.2",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/image-optimizer": "^1.7"
     },
     "require-dev": {

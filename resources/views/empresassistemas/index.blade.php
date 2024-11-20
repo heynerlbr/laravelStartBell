@@ -19,18 +19,18 @@
                 <table class="table table-nowrap table-sm table-striped dt-responsive align-middle table-hover"
                     style="border-collapse: collapse; border-spacing: 0; width:100%" id="table_empresas">
                     <thead class="thead-light">
-                        <!-- <th>Consecutivo</th> -->
+                         <th>#</th> 
                         <th>Nombre</th>
                         {{-- <th>Descripción</th> --}}
                         <th class="all"> Acciones</th>
                     </thead>
                     <tbody>
                         <tr v-for="(role,index) in empresas">
-                            <!-- <td>
+                            <td>
                                 <a href="javascript:void(0);" class="link-info fs-13">
                                     <strong>@{{ index + 1 }}</strong>
                                 </a>
-                            </td> -->
+                            </td> 
                             <td>@{{ role.nombre }}</td>
                             {{-- <td>@{{ role.description }}</td> --}}
                             <td>

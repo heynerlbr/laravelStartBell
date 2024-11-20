@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\favoritos;
+use Illuminate\Support\Facades\DB;
 
 class FavoritosController extends Controller
 {
@@ -42,26 +43,41 @@ class FavoritosController extends Controller
     }
 }
 
-    public function obtenerFavoritos(Request $request)
-    {
+public function obtenerFavoritos(Request $request)
+{
+    try {
         $userId = $request->input('userId');
-        
-        $favoritos = favoritos::where('user_id', $userId)
-                            ->with('lugar') // Relación con el modelo Lugar
-                            ->get()
-                            ->map(function($favorito) {
-                                return [
-                                    'id' => $favorito->lugar->id,
-                                    'nombre' => $favorito->lugar->nombre,
-                                    'direccion' => $favorito->lugar->direccion,
-                                ];
-                            });
+
+        // Realizando la consulta con DB
+        $favoritos = DB::table('favoritos')
+            ->join('lugares', 'favoritos.lugar_id', '=', 'lugares.id')
+            ->where('favoritos.user_id', $userId)
+            ->select('lugares.id as lugar_id', 'lugares.nombre', 'lugares.direccion')
+            ->get();
+
+        // Mapeo de resultados
+        $favoritos = $favoritos->map(function ($favorito) {
+            return [
+                'id' => $favorito->lugar_id,
+                'nombre' => $favorito->nombre,
+                'direccion' => $favorito->direccion,
+            ];
+        });
 
         return response()->json([
             'success' => true,
             'favoritos' => $favoritos,
+            'message' => 'Favoritos obtenidos exitosamente.',
         ]);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No se pudo obtener la lista de favoritos. Inténtelo de nuevo más tarde.',
+            'error' => $th->getMessage(),
+        ], 500);
     }
+}
+
 
     
 }

@@ -12,7 +12,6 @@
                             <img src="<?php echo e(URL::asset('build/images/logo-dark.png')); ?>" alt="" height="17">
                         </span>
                     </a>
-
                     <a href="index" class="logo logo-light">
                         <span class="logo-sm">
                             <img src="<?php echo e(URL::asset('build/images/logo-sm.png')); ?>" alt="" height="22">
@@ -22,7 +21,6 @@
                         </span>
                     </a>
                 </div>
-
                 <?php if(!Auth::user()->hasRole('conductor')): ?>
                     <button type="button"
                         class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger shadow-none"
@@ -34,39 +32,21 @@
                         </span>
                     </button>
                 <?php endif; ?>
-
-
                 
-
                     <?php
                         $user = Auth::user();
                         $empresaImg = $user->empresa ? $user->empresa->img : null;
                     ?>
-
-                    <?php if($empresaImg): ?>
-                        <img src="<?php echo e(URL::asset($empresaImg)); ?>" alt="Logo de la empresa" style="height: 40px; margin-top: 13px;">
-                    <?php else: ?>
-                        <img src="<?php echo e(URL::asset('build/images/logo-italcol.png')); ?>" alt="Logo predeterminado" style="height: 40px; margin-top: 13px;">
-                    <?php endif; ?>
-
+                    
                 
-
-
                 <!-- App Search-->
                 
             </div>
-
-                
             <div class="d-flex align-items-center">
-
                 
-
                 
-
                 
-
                 
-
                 <?php if(Auth::user()->hasRole('superadministrador') || Auth::user()->hasRole('Adminstrador')): ?>
                     <!-- ////////////// Reportes //////////////// -->
                     <div class="ms-1 header-item  d-sm-flex">
@@ -74,7 +54,6 @@
                         <i class='ri-file-list-fill fs-22'></i>
                         </button>    
                     </div>
-
                     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
                         <div class="offcanvas-header">
                             <h5 id="offcanvasRightLabel">Reportes</h5>
@@ -120,7 +99,6 @@
                                         <option value="19">Barranquilla</option>
                                     </select>
                                 </div>
-                                
                                 <div class="mb-3">
                                     <label class="form-label" for="fechaInicio">Fecha Inicio</label>
                                     <input type="text" class="form-control flatpickr-input accion" id="fechaInicio" placeholder="Fecha Inicio" data-provider="flatpickr">
@@ -134,9 +112,6 @@
                                         <i class="ri-file-pdf-fill label-icon align-middle fs-16 me-2"></i> Excel
                                     </a>
                                 </div>
-
-                               
-
                                 <script>
                                     document.getElementById('generarPdfBtn').addEventListener('click', function () {
                                         var fechaInicio = document.getElementById('fechaInicio').value;
@@ -145,17 +120,13 @@
                                         var Planta = document.getElementById('Planta').value;
                                         console.log(Tipo);
                                         var registroId = "tu_valor_aqui";  // Reemplaza "tu_valor_aqui" con la lógica para obtener el ID de tu registro
-
-
                                         if (fechaInicio === "") {
                                             fechaInicio = 1
                                         }
                                         if ( fechaFin === "") {
                                             fechaFin = 1
                                         }
-
                                         var pdfUrl = 'Prueba/' + fechaInicio + '/' + fechaFin+ '/' + Tipo+ '/' + Planta;
-                                        
                                         window.open(pdfUrl, '_blank');
                                     });
                                 </script>
@@ -164,7 +135,6 @@
                     </div>
                     <!-- ////////////////////////////// --> 
                 <?php endif; ?>
-
                 <div class="ms-1 header-item d-none d-sm-flex">
                     <button type="button"
                         class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none"
@@ -172,26 +142,18 @@
                         <i class='bx bx-fullscreen fs-22'></i>
                     </button>
                 </div>
-
-                
-            
-
                 <div class="ms-1 header-item d-none d-sm-flex">
                     <button type="button"
                         class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle light-dark-mode shadow-none">
                         <i class='bx bx-moon fs-22'></i>
                     </button>
                 </div>
-
                 
-
-
                 <div class="ms-1 header-item  d-sm-flex">
                     <a href="https://web.whatsapp.com/send?phone=313 2163045" target="_blank" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle">
                         <i class='bx bx-support fs-22 text-success'></i>
                     </a>
                 </div>
-
                 <div class="dropdown topbar-head-dropdown ms-1 header-item">
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="mdi mdi-update fs-22"></i>
@@ -212,14 +174,11 @@
                         </div>
                     </div>
                 </div>
-
-
                 <div class="dropdown ms-sm-3 header-item topbar-user">
                     <button type="button" class="btn shadow-none" id="page-header-user-dropdown"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="d-flex align-items-center">
                             
-
                                 <img class="rounded-circle header-profile-user"
                                 src="<?php if(Auth::user()->imgUser != ''): ?> <?php echo e(Auth::user()->imgUser); ?><?php else: ?><?php echo e(asset('imagenes/avatar.png')); ?> <?php endif; ?>"
                                 alt="Header Avatar">                                
@@ -249,8 +208,6 @@
                             class="align-middle">Usuarios</span></a>
                         <div class="dropdown-divider"></div>
                         <?php endif; ?>
-
-                    
                         
                         
                         <a class="dropdown-item " href="javascript:void();"
@@ -267,7 +224,6 @@
         </div>
     </div>
 </header>
-
 <!-- removeNotificationModal -->
 <div id="removeNotificationModal" class="modal fade zoomIn" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -291,11 +247,9 @@
                         It!</button>
                 </div>
             </div>
-
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
 <?php $__env->startSection('js'); ?>
 <script src="/js/marcas/marcas.js?v=<?php echo date('YmdHis'); ?>"></script>
 <?php $__env->stopSection(); ?><?php /**PATH C:\wamp64\www\LaravelStarbell\resources\views/layouts/velzon/topbar.blade.php ENDPATH**/ ?>

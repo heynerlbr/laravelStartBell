@@ -16,7 +16,7 @@
                                         <div class="mb-4">
                                             <a href="#" class="d-block">
                                                 {{-- <img src="{{ URL::asset('storage/Msi Logo.png')}}" alt="" height="120"> --}}
-                                                <img src="{{ URL::asset('storage/Msi-Logo blanco.png')}}" alt="" height="120">
+                                                <img src="{{ URL::asset('icon-removebg.png')}}" alt="" height="120">
                                             </a>
                                         </div>
                                         <div class="mt-auto">
@@ -144,7 +144,7 @@
                 <div class="col-lg-12">
                     <div class="text-center">
                         <p class="mb-0">&copy;
-                            <script>document.write(new Date().getFullYear())</script> Campana. Pensado con <i class="mdi mdi-heart text-danger"></i> para ti
+                            <script>document.write(new Date().getFullYear())</script> StarBell. Pensado con <i class="mdi mdi-heart text-danger"></i> para ti
                         </p>
                     </div>
                 </div>

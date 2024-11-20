@@ -5,14 +5,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\elementos_reservas;
 use Illuminate\Http\Request;
-
+use Carbon\Carbon;
 class MyReservasController extends Controller
 {
     function Listar(Request $request)  {
         $reservas=[];
         try {
             $idUsuario = $request->input('id');
-
+            // $fechaActual=date('Y-m-d');
+            $fechaActual = Carbon::now('America/Bogota')->toDateString();
             $reservas = DB::table('elementos_reservas')
                         ->selectRaw('elementos_reservas.*,users.name,lugares.nombre as nombreLugar,lugares.direccion as direccionLugar,municipios.municipio,departamentos.departamento')
                         ->leftJoin('elementos_lugares', 'elementos_lugares.id', '=', 'elementos_reservas.id_elemento')
@@ -22,6 +23,7 @@ class MyReservasController extends Controller
                         ->leftJoin('users', 'users.id', '=', 'elementos_reservas.id_usuario_crea')
                         ->where('elementos_reservas.id_usuario_crea','=',$idUsuario)
                         ->where('elementos_reservas.estado','<>',0)
+                        ->where('elementos_reservas.fecha_inicio','>=',$fechaActual)
                         ->get(); 
 
             return response()->json(['Titulo'=>'Exitó','Tipo'=>'success','Respuesta'=>'se lista de manera correcta','reservas'=> $reservas]);

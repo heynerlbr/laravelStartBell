@@ -31,18 +31,21 @@ class ReservasController extends Controller
 
             if ($role=='admin') {
                 $reservas =  DB::table('elementos_reservas') 
-                            ->selectRaw('elementos_reservas.*,lugares.nombre as nombreLugar,elementos_lugares.nombre as nombreElemento')               
+                            ->selectRaw('elementos_reservas.*,lugares.nombre as nombreLugar,elementos_lugares.nombre as nombreElemento, users.name as nombreUsuarioReserva')               
                             ->leftjoin('elementos_lugares','elementos_lugares.id','=','elementos_reservas.id_elemento')
                             ->leftjoin('lugares','lugares.id','=','elementos_lugares.id_lugar')
+                            ->leftjoin('users','users.id','=','elementos_reservas.id_usuario_crea')
                             ->get();
             }else{
                 $reservas =  DB::table('elementos_reservas')       
-                            ->selectRaw('elementos_reservas.*,lugares.nombre as nombreLugar,elementos_lugares.nombre as nombreElemento')           
+                            ->selectRaw('elementos_reservas.*,lugares.nombre as nombreLugar,elementos_lugares.nombre as nombreElemento, users.name as nombreUsuarioReserva')           
                             ->leftjoin('elementos_lugares','elementos_lugares.id','=','elementos_reservas.id_elemento')
                             ->leftjoin('lugares','lugares.id','=','elementos_lugares.id_lugar')
+                            ->leftjoin('users','users.id','=','elementos_reservas.id_usuario_crea')
                             ->where('lugares.id_usuario_crea','=', $id_usuario_crea)
-                            ->where('lugares.id_empresa','=', $id_empresa)
+                            ->orwhere('lugares.id_empresa','=', $id_empresa)
                             ->get();
+                // dd($reservas);
             }
             
             $mensaje = ["Titulo"=>"Exito","Respuesta"=>"la informaci&oacuten satisfatoria","Tipo"=>"success","reservas"=>$reservas]; 
@@ -105,7 +108,8 @@ class ReservasController extends Controller
         $datos=json_decode($_POST['data']);
         try{
                 $reserva=elementos_reservas::find($datos->id); 
-                $reserva->fecha=$datos->fecha;
+                $reserva->fecha_inicio=$datos->fecha_inicio;
+                $reserva->fecha_fin=$datos->fecha_fin;
                 $reserva->hora_inicio=$datos->hora_inicio;
                 $reserva->hora_fin=$datos->hora_fin;
                 $reserva->save();             

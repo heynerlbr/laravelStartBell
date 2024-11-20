@@ -7,6 +7,7 @@ use App\Models\elementos_reservas;
 use App\Models\lugares;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\PusherController;
 class ElementosLugaresController extends Controller
 {
      /**
@@ -24,11 +25,9 @@ class ElementosLugaresController extends Controller
         $lugaresTabla="";
         $reservables=[];
         try{
-
-            
             $role = Auth::user()->roles->first()->name;
             $id_usuario_crea = Auth::user()->id;
-
+            $id_empresa = Auth::user()->idEmpresa;
             if ($role=='admin') {
                 $lugares=DB::table('lugares')->get();
                 $lugaresTabla=DB::table('lugares')->get();
@@ -36,20 +35,20 @@ class ElementosLugaresController extends Controller
             }else{
                 $lugares=DB::table('lugares')
                         ->where('id_usuario_crea','=',$id_usuario_crea)
+                        ->orWhere('id_empresa','=',$id_empresa)
                         ->get();
                 $lugaresTabla=DB::table('lugares')
                                 ->where('id_usuario_crea','=',$id_usuario_crea)
+                                ->orWhere('id_empresa','=',$id_empresa)
                             ->get();
                 // $elementos_lugares =  elementos_lugares::get();
                 $elementos_lugares = DB::table('elementos_lugares')
                                     ->select('elementos_lugares.*')
                                     ->leftjoin('lugares','lugares.id','=','elementos_lugares.id_lugar')
                                     ->where('lugares.id_usuario_crea','=',$id_usuario_crea)
+                                    ->orWhere('lugares.id_empresa','=',$id_empresa)
                                     ->get();
             }
-
-
-
             $reservables=DB::table('reservables')->get();
             $mensaje = ["Titulo"=>"Exito","Respuesta"=>"la informaci&oacuten satisfatoria","Tipo"=>"success",
             "elementos_lugares"=>$elementos_lugares,"lugares"=>$lugares,"lugaresTabla"=>$lugaresTabla,"reservables"=>$reservables]; 
@@ -221,8 +220,6 @@ class ElementosLugaresController extends Controller
         ];
         return strtr($texto, $acentos);
     }
-
-
     public function EliminarImagenElemento(){
         $datos=json_decode($_POST['data']);
         try{
@@ -234,41 +231,31 @@ class ElementosLugaresController extends Controller
         }
         return json_encode($mensaje);
     }
-
     public function SeleccionarImagenPrincipal()  {
         $datos=json_decode($_POST['data']);
         try{
-
-
-
             $flight = elementos_imagenes::find($datos->id);
             $url=$flight->url;
             $id_elemento=$flight->id_elemento;
             elementos_imagenes::where('id_elemento', $id_elemento)->update(['imagen_principal' => 0]);
             $flight->imagen_principal=1;
             $flight->save();
-
             $registro=elementos_lugares::find($id_elemento);
             $registro->url_imagen=$url;
             $registro->save();
-
             $mensaje = ["Titulo"=>"Exito","Respuesta"=>"Se eliminó el registro de manera correcta","Tipo"=>"success"]; 
         }catch(\Exception $e){
-
             // dd($e);
             $mensaje = ["Titulo"=>"Error","Respuesta"=>"Algo salio mal contacte con al administrador del sistema.","Tipo"=>"error"]; 
         }
         return json_encode($mensaje);
     }
-
-
     public function ListarReservasElemento() {
         $datos = json_decode($_POST['data']);
         try {
             $elementos_reservas = DB::table('elementos_reservas')
             ->where('id_elemento', $datos->id_elemento)
             ->get();
-
             // dd($elementos_reservas );
             $mensaje = [
                 "Titulo" => "Éxito",
@@ -295,7 +282,6 @@ class ElementosLugaresController extends Controller
             $elemento_reserva->usuario = $id_usuario;
             // Asigna otros campos necesarios
             $elemento_reserva->save();
-    
             $mensaje = [
                 "Titulo" => "Éxito",
                 "Respuesta" => "Reserva creada correctamente.",
@@ -348,7 +334,6 @@ class ElementosLugaresController extends Controller
                 $elemento_reserva->id_usuario_crea = $id_usuario ?? $elemento_reserva->usuario;
                 // Actualiza otros campos necesarios
                 $elemento_reserva->save();
-    
                 $mensaje = [
                     "Titulo" => "Éxito",
                     "Respuesta" => "Reserva actualizada correctamente.",
@@ -371,7 +356,6 @@ class ElementosLugaresController extends Controller
         }
         return json_encode($mensaje);
     }
-
     public function EliminarReservaElemento() {
         try {
             $datos = json_decode($_POST['data']);
@@ -399,19 +383,19 @@ class ElementosLugaresController extends Controller
         }
         return json_encode($mensaje);
     }
-    
-
     public function CambiarEstadoReserva(Request $request) {
         $datos = json_decode($_POST['data']);
         try {
             $elemento_reserva = elementos_reservas::find($datos->id);
-    
             if ($elemento_reserva) {
                 // Cambiar el estado si está dentro de los valores permitidos (0, 1, 2)
                 if (in_array(intval($datos->estado), [0, 1, 2])) {
                     $elemento_reserva->estado = $datos->estado;
                     $elemento_reserva->save();
-    
+                    if ($datos->estado==2) {
+                       $PusherController= new PusherController();
+                       $PusherController->createEvent('Se cancelo la reserva');
+                    }
                     $mensaje = [
                         "Titulo" => "Éxito",
                         "Respuesta" => "Estado actualizado correctamente.",
@@ -433,6 +417,7 @@ class ElementosLugaresController extends Controller
                 ];
             }
         } catch (\Throwable $th) {
+            // dd($th);
             $mensaje = [
                 "Titulo" => "Error",
                 "Respuesta" => "Algo salió mal, contacte al administrador.",
@@ -441,12 +426,4 @@ class ElementosLugaresController extends Controller
         }
         return json_encode($mensaje);
     }
-    
-    
-    
-    
-    
-    
-
-
 }
